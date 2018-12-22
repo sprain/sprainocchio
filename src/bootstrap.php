@@ -1,7 +1,6 @@
 <?php
 
 require __DIR__ . '/../vendor/autoload.php';
-require __DIR__ . '/../config.php';
 
 use Masterminds\HTML5;
 use Pimple\Container;
@@ -15,31 +14,42 @@ use Sprainocchio\Theme\DataCopier;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 
-const THEME_PATH = __DIR__ . '/../themes/' . THEME;
-const PUBLIC_PATH = __DIR__ . '/../public/';
-
-
 $container = new Container();
 
-$container['themeTemplate'] = function($c) {
-    $themeConfigFile = THEME_PATH . DIRECTORY_SEPARATOR . 'config.yml';
+$container['blogConfig'] = function($c) {
+    $blogConfigFile = __DIR__ . '/../config.yml';
+    $blogConfig = Yaml::parse(file_get_contents($blogConfigFile));
 
-    if (file_exists($themeConfigFile)) {
-        $themeConfig = Yaml::parse(file_get_contents($themeConfigFile));
+    $blogConfig['themePath'] = __DIR__ . '/../themes/' . $blogConfig['theme'];
+    $blogConfig['publicPath'] = __DIR__ . '/../public/';
+
+    if (!isset($blogConfig['baseUrl']) || null == $blogConfig['baseUrl']) {
+        $blogConfig['baseUrl'] = $blogConfig['publicPath'];
     }
 
-    if (isset($themeConfig['template'])) {
-        return $themeConfig['template'];
+    return $blogConfig;
+};
+
+$container['themeConfig'] = function($c) {
+    $themeConfigFile = $c['blogConfig']['themePath'] . DIRECTORY_SEPARATOR . 'config.yml';
+    if (file_exists($themeConfigFile)) {
+        return Yaml::parse(file_get_contents($themeConfigFile));
     }
 
     return [];
 };
 
 $container['twig'] = function($c) {
-    $loader = new Twig_Loader_Filesystem(THEME_PATH);
+    $loader = new Twig_Loader_Filesystem($c['blogConfig']['themePath']);
     $twig = new Twig_Environment($loader);
-    $twig->addGlobal('baseUrl', BASE_URL);
-    $twig->addGlobal('theme', $c['themeTemplate']);
+    $twig->addGlobal('baseUrl', $c['blogConfig']['baseUrl']);
+
+    $themeTemplateData = [];
+    if (isset($c['themeConfig']['template'])) {
+        $themeTemplateData = $c['themeConfig']['template'];
+    }
+
+    $twig->addGlobal('theme', $themeTemplateData);
 
     return $twig;
 };
@@ -61,14 +71,14 @@ $container['postCreator'] = function($c) {
 $container['postSaver'] = function($c) {
     return new PostSaver(
         $c['twig'],
-        PUBLIC_PATH
+        $c['blogConfig']['publicPath']
     );
 };
 
 $container['archiveSaver'] = function($c) {
     return new ArchiveSaver(
         $c['twig'],
-        PUBLIC_PATH
+        $c['blogConfig']['publicPath']
     );
 };
 
@@ -91,8 +101,8 @@ $container['startpage'] = function($c) {
 
 $container['themeDataCopier'] = function($c) {
     return new DataCopier(
-        THEME_PATH,
-        PUBLIC_PATH
+        $c['blogConfig']['themePath'],
+        $c['blogConfig']['publicPath']
     );
 };
 
