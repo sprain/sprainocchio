@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
 {% block content %}
-
     {% include 'includes/postContent.html.twig' with {"post": posts[0]} %}
-
 
     {% set posts = posts|slice(1) %}
     {% if posts|length > 0 %}
-        <h1>Weitere Artikel</h1>
+        <hr>
+        <h3>More to read</h3>
         {% for post in posts %}
             <p>{{ post.date|date('d.m.Y') }} – <a href="{{ baseUrl }}{{ post.filename }}">{{ post.title }}</a></p>
         {% endfor %}

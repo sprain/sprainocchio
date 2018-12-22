@@ -1,9 +1,13 @@
-<p>
-    <time>{{ post.date|date('d. F Y') }}</time> |
-    <span id="tags">
-        {% for tag in post.tags %}
-            <a href="{{ baseUrl }}tags/{{ tag|lower }}/">{{ tag }}</a>{% if not loop.last %} {% endif %}
-        {% endfor %}
-    </span>
-</p>
-{{ post.content|raw }}
+<article>
+    <p>
+        <time>{{ post.date|date('d. F Y') }}</time>
+        {% if post.tags|length %} |
+            <span id="tags">
+                {% for tag in post.tags %}
+                    <a href="{{ baseUrl }}tags/{{ tag|lower }}/">{{ tag }}</a>{% if not loop.last %} {% endif %}
+                {% endfor %}
+            </span>
+        {% endif %}
+    </p>
+    {{ post.content|raw }}
+</article>
