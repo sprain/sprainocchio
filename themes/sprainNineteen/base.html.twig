@@ -1,0 +1,26 @@
+<html>
+	<head>
+		<base href="{{ baseUrl }}">
+		<link rel="stylesheet" type="text/css" href="styles/reset.css">
+		<link rel="stylesheet" type="text/css" href="styles/styles.css">
+		<link rel="stylesheet" type="text/css" href="styles/responsive.css">
+	</head>
+	<body>
+			<div id="container">
+				<div id="content">
+					{% block content %}
+					{% endblock %}
+				</div>
+
+				<div id="sidebar">
+					<div class="sidebar-element">
+						<a href="{{ baseUrl }}"><img src="{{ theme.photo_url }}"></a>
+					</div>
+					<div class="sidebar-element">
+						<p><strong>{{ theme.your_name }}</strong></p>
+						<p><small>{{ theme.description|raw }}</small></p>
+					</div>
+				</div>
+			</div>
+	</body>
+</html>

@@ -1,0 +1,117 @@
+html {
+	font-size: 20px;
+}
+body {
+	font-family: "Aileron-Light";
+	background-color: rgb(250,250,251);
+	color: rgba(0,0,0,0.9);
+}	
+
+h1 {
+	font-family: "Stag-Book";
+	font-size: 3rem;
+	line-height: 1;
+	margin-bottom: 2rem;
+}
+h2 {
+	font-family: "Aileron-SemiBold";
+	font-size: 2rem;
+	margin-bottom: 1rem;
+	margin-top: 3rem;
+}
+p {
+	margin-bottom: 1rem;
+	margin-top: 1rem;
+	font-size: 1rem;
+	line-height: 1.8;
+}
+strong {
+	font-family: "Aileron";
+}
+ul {
+	list-style: disc;
+}
+
+li {
+	list-style-position:outside;
+
+	line-height: 1.8;
+}
+
+
+#container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	background-color: rgb(80,115,135);
+}
+
+#sidebar {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 4rem;
+	color: rgb(170,200,210);
+}
+#sidebar .sidebar-element {
+	width: 28%;
+	box-sizing: border-box;
+}
+#sidebar img {
+	border-radius: 50%;
+	width: 100%;
+}
+#sidebar p {
+	margin-top: 0.5rem;
+	margin-bottom: 0.5rem;
+}
+#sidebar small {
+	font-size: 0.8rem;
+	line-height: 1.5;
+}
+#sidebar a {
+	font-family: "Aileron";
+	background: none;
+	padding: 0;
+	color: rgb(190,220,230);
+	text-decoration: none;
+}
+#sidebar a:hover {
+	color: rgba(255,255,255,0.9);
+}
+
+#content {
+	background-color: rgb(250,250,251);
+	padding-top: 4rem;
+	padding-bottom: 4rem;
+}
+
+#content h1,
+#content h2,
+#content p,
+#content ul,
+#content ol{
+	padding-left: 4rem;
+	padding-right: 4rem;
+}
+#content img {
+	margin-top: 2rem;
+	margin-bottom: 2rem;
+	width: 100%;
+}
+#content a {
+	text-decoration: none;
+	font-family: "Aileron-SemiBold";
+	color: rgba(0,0,0,0.9);
+	background-color: rgba(210,215,220,0.5);
+	padding: 0 0.2rem;
+}
+#content #tags a {
+	font-family: "Aileron";
+}
+#content a:hover {
+	background-color: rgba(0,0,0,0.9);
+	color: rgba(210,215,220);
+}

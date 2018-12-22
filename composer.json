@@ -1,0 +1,28 @@
+{
+    "name": "sprain/sprainocchio",
+    "description": "A simple blog engine",
+    "type": "project",
+    "require": {
+        "php": ">=7.1",
+        "ext-dom": "*",
+        "twig/twig": "^2.6",
+        "erusev/parsedown": "^1.7",
+        "symfony/finder": "^4.2",
+        "pimple/pimple": "^3.2",
+        "masterminds/html5": "^2.4",
+        "symfony/yaml": "^4.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sprainocchio\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Manuel Reinhard",
+            "email": "manu@sprain.ch"
+        }
+    ],
+    "minimum-stability": "stable"
+}
