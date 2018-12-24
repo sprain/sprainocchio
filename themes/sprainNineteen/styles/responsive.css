@@ -1,4 +1,4 @@
-@media (min-width: 1400px) and (min-device-width: 1600px) {
+@media (min-width: 1200px) and (min-device-width: 1366px) {
 	#container {
 		flex-direction: row;
 	}
@@ -16,10 +16,16 @@
 		padding: 0;
 		width: 12rem;
 	}
+	#sidebar p {
+		line-height: 1.5;
+	}
+	#sidebar h2 {
+		font-size: 1.5rem;
+	}
 }
 
-@media (min-width: 880px) and (min-device-width: 1600px) {
-	h1, h2, p, time {
+@media (min-width: 880px) and (min-device-width: 1024px) {
+	h1, h2, p, time, ol, ul, li {
 		max-width: 40rem;
 	}
 	img {
@@ -28,10 +34,23 @@
 	#sidebar {
 		max-width: 46rem;
 	}
-}	
+	#content {
+		padding-top: 4rem;
+		padding-bottom: 4rem;
+	}
+	#content h1,
+	#content h2,
+	#content h3,
+	#content p,
+	#content ol,
+	#content ul{
+		padding-left: 4rem;
+		padding-right: 4rem;
+	}
+}
 
 @media (max-width: 1200px) and (max-device-width: 1599px),
-       (max-width: 880px) and (min-device-width: 1600px) {
+(max-width: 880px) and (min-device-width: 1600px) {
 	#sidebar {
 		padding: 4rem;
 		flex-direction: column;

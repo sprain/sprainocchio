@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<base href="{{ baseUrl }}">
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="stylesheet" type="text/css" href="styles/reset.css">
 		<link rel="stylesheet" type="text/css" href="styles/styles.css">
 		<link rel="stylesheet" type="text/css" href="styles/responsive.css">
@@ -17,8 +19,8 @@
 						<a href="{{ baseUrl }}"><img src="{{ theme.photo_url }}"></a>
 					</div>
 					<div class="sidebar-element">
-						<p><strong>{{ theme.your_name }}</strong></p>
-						<p><small>{{ theme.description|raw }}</small></p>
+						<h2>{{ theme.your_name }}</h2>
+						<p>{{ theme.description|raw }}</p>
 					</div>
 				</div>
 			</div>
