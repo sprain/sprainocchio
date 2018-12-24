@@ -18,6 +18,9 @@ $container = new Container();
 
 $container['blogConfig'] = function($c) {
     $blogConfigFile = __DIR__ . '/../config.yml';
+    if (!file_exists($blogConfigFile)) {
+        $blogConfigFile = __DIR__ . '/../config.dist.yml';
+    }
     $blogConfig = Yaml::parse(file_get_contents($blogConfigFile));
 
     $blogConfig['themePath'] = __DIR__ . '/../themes/' . $blogConfig['theme'];
