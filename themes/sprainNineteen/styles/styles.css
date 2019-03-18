@@ -104,6 +104,9 @@ article {
 	padding-left: 2rem;
 	padding-right: 2rem;
 }
+#content li{
+	margin-bottom: 0.5rem;
+}
 #content img {
 	width: 100%;
 }
