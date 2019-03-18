@@ -31,6 +31,8 @@ class PostCreator
         return (new Post())
             ->setDate($this->getDate())
             ->setTitle($this->getTitle())
+            ->setSummary($this->getSummary())
+            ->setImage($this->getImage())
             ->setTags($this->getTags())
             ->setContent($this->getHtml());
     }
@@ -47,6 +49,34 @@ class PostCreator
         }
 
         return $title;
+    }
+
+    protected function getSummary() : ?string
+    {
+        $summary = $this->getMetaValue('summary');
+
+        if (null == $summary) {
+            $summaries = $this->parseHtml()->getElementsByTagName('p');
+            if ($summaries->length > 0) {
+                $summary = $summaries->item(0)->textContent;
+            }
+        }
+
+        return $summary;
+    }
+
+    protected function getImage() : ?string
+    {
+        $image = $this->getMetaValue('image');
+
+        if (null == $image) {
+            $images = $this->parseHtml()->getElementsByTagName('img');
+            if ($images->length > 0) {
+                $image = $images->item(0)->getAttribute('src');
+            }
+        }
+
+        return $image;
     }
 
     protected function getDate() : \DateTime

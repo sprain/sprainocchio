@@ -1,5 +1,21 @@
 {% extends 'base.html.twig' %}
 
+{% block headertags %}
+    <title>{{ post.title }}</title>
+    <meta name="description" content="{{ post.summary }}">
+
+    <meta name="twitter:card" value="summary">
+    <meta name="twitter:title" content="{{ post.title }}">
+    {% if post.summary %}<meta name="twitter:description" content="{{ post.summary }}">{% endif %}
+    {% if post.image %}<meta name="twitter:image" content="{{ post.image }}">{% endif %}
+
+    <meta property="og:title" content="{{ post.title }}">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="{{ baseUrl }}{{ post.filename }}">
+    {% if post.summary %}<meta property="og:description" content="{{ post.summary }}">{% endif %}
+    {% if post.image %}<meta property="og:image" content="{{ post.image }}">{% endif %}
+{% endblock %}
+
 {% block content %}
     {% include 'includes/postContent.html.twig' with {"post": post} %}
 {% endblock %}

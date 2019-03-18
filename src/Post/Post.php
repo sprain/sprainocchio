@@ -8,6 +8,10 @@ class Post
 
     protected $title;
 
+    protected $summary;
+
+    protected $image;
+
     protected $tags = [];
 
     protected $content;
@@ -32,6 +36,30 @@ class Post
     public function setTitle(string $title) : self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getSummary(): ?string
+    {
+        return $this->summary;
+    }
+
+    public function setSummary($summary) : self
+    {
+        $this->summary = $summary;
+
+        return $this;
+    }
+
+    public function getImage() : ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage($image) : self
+    {
+        $this->image = $image;
 
         return $this;
     }
