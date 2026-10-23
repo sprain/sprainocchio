@@ -2,18 +2,20 @@
 
 namespace Sprainocchio\Archive;
 
+use Sprainocchio\Util\Urlizer;
+
 class Archive
 {
-    protected $name;
-    protected $posts;
-    protected $postsPerPage;
-    protected $path;
-    protected $templateName;
+    use Urlizer;
 
-    public function __construct(int $postsPerPage = 20)
-    {
-        $this->posts = [];
-        $this->postsPerPage = $postsPerPage;
+    protected ?string $name = null;
+    protected array $posts = [];
+    protected ?string $path = null;
+    protected ?string $templateName = null;
+
+    public function __construct(
+        protected int $postsPerPage = 20
+    ) {
     }
 
     public function setName(string $name) : self
@@ -28,7 +30,7 @@ class Archive
         return $this->name;
     }
 
-    public function getPosts()
+    public function getPosts() : array
     {
         return $this->posts;
     }
@@ -45,7 +47,7 @@ class Archive
         return $this->path;
     }
 
-    public function setPath($path) : self
+    public function setPath(?string $path) : self
     {
         $this->path = $path;
 
@@ -57,14 +59,14 @@ class Archive
         return $this->templateName;
     }
 
-    public function setTemplateName($templateName) : self
+    public function setTemplateName(?string $templateName) : self
     {
         $this->templateName = $templateName;
 
         return $this;
     }
 
-    public function getPostsPerPage(): int
+    public function getPostsPerPage() : int
     {
         return $this->postsPerPage;
     }
@@ -76,7 +78,7 @@ class Archive
 
     public function getNumberOfPages() : int
     {
-        return ceil(count($this->posts) / $this->postsPerPage);
+        return (int) ceil(count($this->posts) / $this->postsPerPage);
     }
 
     public function getDirName() : string
@@ -86,18 +88,8 @@ class Archive
             $dirName = $this->getPath() . DIRECTORY_SEPARATOR;
         }
 
-        $dirName .= $this->urlize($this->getName());
+        $dirName .= $this->urlize($this->getName() ?? '');
 
         return $dirName;
-    }
-
-    public function urlize($string) {
-        $string = preg_replace('~[^\\pL0-9_]+~u', '-', $string);
-        $string = trim($string, "-");
-        $string = iconv("utf-8", "us-ascii//TRANSLIT", $string);
-        $string = strtolower($string);
-        $string = preg_replace('~[^-a-z0-9_]+~', '', $string);
-
-        return $string;
     }
 }

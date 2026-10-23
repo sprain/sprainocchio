@@ -2,20 +2,16 @@
 
 namespace Sprainocchio\Post;
 
-use Twig_Environment;
+use Twig\Environment;
 
 class PostSaver
 {
-    protected $twig;
-    protected $targetDir;
+    protected Post $post;
 
-    /** @var Post */
-    protected $post;
-
-    public function __construct(Twig_Environment $twig, string $targetDir)
-    {
-        $this->twig = $twig;
-        $this->targetDir = $targetDir;
+    public function __construct(
+        protected Environment $twig,
+        protected string $targetDir
+    ) {
     }
 
     public function setPost(Post $post) : self
@@ -28,8 +24,8 @@ class PostSaver
     public function save() : string
     {
         $dir = dirname($this->getTargetFile());
-        if(!is_dir($dir)) {
-            mkdir($dir);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0777, true);
         }
 
         file_put_contents($this->getTargetFile(), $this->getHtml());
@@ -46,7 +42,7 @@ class PostSaver
 
     protected function getHtml() : string
     {
-         return $this->twig->render('single.html.twig', [
+        return $this->twig->render('single.html.twig', [
             'post' => $this->post
         ]);
     }

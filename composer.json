@@ -3,14 +3,13 @@
     "description": "A simple blog engine",
     "type": "project",
     "require": {
-        "php": ">=7.1",
+        "php": ">=8.5",
         "ext-dom": "*",
-        "twig/twig": "^2.6",
-        "erusev/parsedown": "^1.7",
-        "symfony/finder": "^4.2",
-        "pimple/pimple": "^3.2",
-        "masterminds/html5": "^2.4",
-        "symfony/yaml": "^4.2"
+        "twig/twig": "^3.21",
+        "erusev/parsedown": "^1.8",
+        "symfony/finder": "^8.0",
+        "pimple/pimple": "^3.5",
+        "symfony/yaml": "^8.0"
     },
     "autoload": {
         "psr-4": {

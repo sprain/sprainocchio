@@ -2,50 +2,54 @@
 
 namespace Sprainocchio\Post;
 
+use Sprainocchio\Util\Urlizer;
+
 class Post
 {
-    protected $date;
+    use Urlizer;
 
-    protected $title;
+    protected ?\DateTime $date = null;
 
-    protected $summary;
+    protected ?string $title = null;
 
-    protected $image;
+    protected ?string $summary = null;
 
-    protected $tags = [];
+    protected ?string $image = null;
 
-    protected $content;
+    protected array $tags = [];
+
+    protected ?string $content = null;
 
     public function getDate() : ?\DateTime
     {
         return $this->date;
     }
 
-    public function setDate(\DateTime $date): self
+    public function setDate(\DateTime $date) : self
     {
         $this->date = $date;
 
         return $this;
     }
 
-    public function getTitle(): ?string
+    public function getTitle() : ?string
     {
         return $this->title;
     }
 
-    public function setTitle(string $title) : self
+    public function setTitle(?string $title) : self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    public function getSummary(): ?string
+    public function getSummary() : ?string
     {
         return $this->summary;
     }
 
-    public function setSummary($summary) : self
+    public function setSummary(?string $summary) : self
     {
         $this->summary = $summary;
 
@@ -57,31 +61,31 @@ class Post
         return $this->image;
     }
 
-    public function setImage($image) : self
+    public function setImage(?string $image) : self
     {
         $this->image = $image;
 
         return $this;
     }
 
-    public function getTags(): array
+    public function getTags() : array
     {
         return $this->tags;
     }
 
-    public function setTags(array $tags): self
+    public function setTags(array $tags) : self
     {
         $this->tags = $tags;
 
         return $this;
     }
 
-    public function getContent()
+    public function getContent() : ?string
     {
         return $this->content;
     }
 
-    public function setContent(string $content): self
+    public function setContent(string $content) : self
     {
         $this->content = $content;
 
@@ -92,17 +96,7 @@ class Post
     {
         return $this->getDate()->format('Ym')
             . DIRECTORY_SEPARATOR
-            . $this->urlize($this->getTitle())
+            . $this->urlize($this->getTitle() ?? '')
             . '.html';
-    }
-
-    public function urlize($string) {
-        $string = preg_replace('~[^\\pL0-9_]+~u', '-', $string);
-        $string = trim($string, "-");
-        $string = iconv("utf-8", "us-ascii//TRANSLIT", $string);
-        $string = strtolower($string);
-        $string = preg_replace('~[^-a-z0-9_]+~', '', $string);
-
-        return $string;
     }
 }

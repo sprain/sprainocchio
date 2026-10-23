@@ -2,7 +2,6 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-use Masterminds\HTML5;
 use Pimple\Container;
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
@@ -11,8 +10,11 @@ use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostSaver;
 use Sprainocchio\Theme\DataCopier;
+use Sprainocchio\Twig\UrlizerExtension;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 $container = new Container();
 
@@ -43,8 +45,9 @@ $container['themeConfig'] = function($c) {
 };
 
 $container['twig'] = function($c) {
-    $loader = new Twig_Loader_Filesystem($c['blogConfig']['themePath']);
-    $twig = new Twig_Environment($loader);
+    $loader = new FilesystemLoader($c['blogConfig']['themePath']);
+    $twig = new Environment($loader);
+    $twig->addExtension(new UrlizerExtension());
     $twig->addGlobal('baseUrl', $c['blogConfig']['baseUrl']);
 
     $themeTemplateData = [];
@@ -66,8 +69,7 @@ $container['postFinder'] = function($c) {
 
 $container['postCreator'] = function($c) {
     return new PostCreator(
-        new Parsedown(),
-        new HTML5()
+        new Parsedown()
     );
 };
 

@@ -4,40 +4,25 @@ namespace Sprainocchio\Blog;
 
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
+use Sprainocchio\Post\Post;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostSaver;
 
 class BlogBuilder
 {
-    protected $postFinder;
-    protected $postCreator;
-    protected $postSaver;
-    protected $archiveSaver;
-    protected $mainArchive;
-    protected $tagArchive;
-    protected $startpage;
-
     public function __construct(
-        PostFinder $postFinder,
-        PostCreator $postCreator,
-        PostSaver $postSaver,
-        ArchiveSaver $archiveSaver,
-        Archive $mainArchive,
-        Archive $tagArchive,
-        Archive $startpage
-    )
-    {
-        $this->postFinder = $postFinder;
-        $this->postCreator = $postCreator;
-        $this->postSaver = $postSaver;
-        $this->archiveSaver = $archiveSaver;
-        $this->mainArchive = $mainArchive;
-        $this->tagArchive = $tagArchive;
-        $this->startpage = $startpage;
+        protected PostFinder $postFinder,
+        protected PostCreator $postCreator,
+        protected PostSaver $postSaver,
+        protected ArchiveSaver $archiveSaver,
+        protected Archive $mainArchive,
+        protected Archive $tagArchive,
+        protected Archive $startpage
+    ) {
     }
 
-    public function buildBlog()
+    public function buildBlog() : void
     {
         $posts = $this->getPosts();
 
@@ -47,14 +32,14 @@ class BlogBuilder
         $this->buildStartpage($posts);
     }
 
-    protected function buildPosts(array $posts)
+    protected function buildPosts(array $posts) : void
     {
         foreach ($posts as $post) {
             $this->postSaver->setPost($post)->save();
         }
     }
 
-    protected function buildStartpage(array $posts)
+    protected function buildStartpage(array $posts) : void
     {
         $this->startpage->setPosts($posts);
 
@@ -63,7 +48,7 @@ class BlogBuilder
             ->save();
     }
 
-    protected function buildMainArchive(array $posts)
+    protected function buildMainArchive(array $posts) : void
     {
         $this->mainArchive
             ->setPosts($posts);
@@ -73,24 +58,23 @@ class BlogBuilder
             ->save();
     }
 
-    protected function buildTagArchives(array $posts)
+    protected function buildTagArchives(array $posts) : void
     {
         $tagArchives = [];
 
         foreach ($posts as $post) {
             $tags = $post->getTags();
-            foreach($tags as $tag) {
+            foreach ($tags as $tag) {
                 $tagArchives[$tag][] = $post;
             }
         }
 
-        foreach($tagArchives as $tag => $posts) {
+        foreach ($tagArchives as $tag => $posts) {
             $this->buildTagArchive($tag, $posts);
         }
-
     }
 
-    protected function buildTagArchive(string $tag, array $posts)
+    protected function buildTagArchive(string $tag, array $posts) : void
     {
         $this->tagArchive
             ->setPosts($posts)
@@ -105,14 +89,11 @@ class BlogBuilder
     {
         $posts = [];
 
-        foreach($this->postFinder->getPostFiles() as $file) {
-            $post = $this->postCreator->fromFile($file);
-            $posts[] = $post;
+        foreach ($this->postFinder->getPostFiles() as $file) {
+            $posts[] = $this->postCreator->fromFile($file);
         }
 
-        usort($posts, function($a, $b){
-            return $a->getDate() < $b->getDate();
-        });
+        usort($posts, fn(Post $a, Post $b) => $b->getDate() <=> $a->getDate());
 
         return $posts;
     }

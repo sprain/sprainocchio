@@ -2,25 +2,19 @@
 
 namespace Sprainocchio\Post;
 
-use Masterminds\HTML5;
+use Dom\HTMLDocument;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 
 class PostCreator
 {
-    protected $mdParser;
+    protected ?string $rawContent = null;
 
-    protected $htmlParser;
+    protected SplFileInfo $file;
 
-    protected $rawContent;
-
-    /** @type SplFileInfo */
-    protected $file;
-
-    public function __construct(\Parsedown $mdParser, HTML5 $htmlParser)
-    {
-        $this->mdParser = $mdParser;
-        $this->htmlParser = $htmlParser;
+    public function __construct(
+        protected \Parsedown $mdParser
+    ) {
     }
 
     public function fromFile(SplFileInfo $file) : Post
@@ -92,71 +86,60 @@ class PostCreator
 
     protected function getTags() : array
     {
-        $tags = $this->getMetaValue('tags');
-
-        if (null === $tags) {
-            $tags = [];
-        }
-
-        return $tags;
+        return $this->getMetaValue('tags') ?? [];
     }
 
-    protected function parseHtml() : \DOMDocument
+    protected function parseHtml() : HTMLDocument
     {
-        return $this->htmlParser->parse(
-            $this->getHtml()
+        return HTMLDocument::createFromString(
+            $this->getHtml(),
+            LIBXML_NOERROR
         );
     }
 
     protected function getHtml() : string
     {
-        $content = $this->getRawContent();
-        $contentParts = explode('+++', $content);
+        $contentParts = $this->splitContent();
 
-        $md = $contentParts[0];
-        if (count($contentParts) > 1) {
-            $md = $contentParts[1];
-        }
-
-        return $this->mdParser->text($md);
+        return $this->mdParser->text(end($contentParts));
     }
 
-    protected function getMetaValue(string $value)
+    protected function getMetaValue(string $value) : mixed
     {
         $metaContent = $this->parseMetaContent();
 
-        if (isset($metaContent[$value])) {
-            return $metaContent[$value];
-        }
-
-        return null;
+        return $metaContent[$value] ?? null;
     }
 
-    protected function parseMetaContent()
+    protected function parseMetaContent() : array
     {
         $metaContent = $this->getRawMetaContent();
 
-        return Yaml::parse($metaContent);
+        if (null === $metaContent) {
+            return [];
+        }
+
+        return Yaml::parse($metaContent) ?? [];
     }
 
-    protected function getRawMetaContent() : string
+    protected function getRawMetaContent() : ?string
     {
-        $content = $this->getRawContent();
-        $contentParts = explode('+++', $content);
+        $contentParts = $this->splitContent();
 
-        if (count($contentParts) > 0) {
+        if (count($contentParts) > 1) {
             return $contentParts[0];
         }
 
         return null;
     }
 
+    protected function splitContent() : array
+    {
+        return explode('+++', $this->getRawContent(), 2);
+    }
+
     protected function getRawContent() : string
     {
-        if (null !== $this->rawContent) {
-            return $this->rawContent;
-        }
-
-        return file_get_contents($this->file->getRealPath());
+        return $this->rawContent ??= file_get_contents($this->file->getRealPath());
     }
 }

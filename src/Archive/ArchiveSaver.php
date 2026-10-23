@@ -2,20 +2,16 @@
 
 namespace Sprainocchio\Archive;
 
-use Twig_Environment;
+use Twig\Environment;
 
 class ArchiveSaver
 {
-    protected $twig;
-    protected $targetDir;
+    protected Archive $archive;
 
-    /** @var Archive */
-    protected $archive;
-
-    public function __construct(Twig_Environment $twig, string $targetDir)
-    {
-        $this->twig = $twig;
-        $this->targetDir = $targetDir;
+    public function __construct(
+        protected Environment $twig,
+        protected string $targetDir
+    ) {
     }
 
     public function setArchive(Archive $archive) : self
