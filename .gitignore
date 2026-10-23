@@ -3,3 +3,4 @@ config.yml
 /.idea
 /vendor
 /public/*
+/CLAUDE.md

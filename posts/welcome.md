@@ -20,4 +20,4 @@ Since this project is still in early-stage development, further improvements are
 You are welcome to contribute [on Github](https://github.com/sprain/sprainocchio).
 
 Oh, the template supports images, too:
-<div><img src="https://source.unsplash.com/random/1600x900"></div>
+<div><img src="https://images.unsplash.com/photo-1764462752458-3d07cfc92fb0?q=80&w=1600&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"></div>
