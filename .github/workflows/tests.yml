@@ -1,15 +1,22 @@
 name: Tests
 
+# claude/**: branches of Claude's scheduled cloud runs, which can't push to master themselves;
+# green tests fast-forward master to them.
 on:
   push:
-    branches: [master]
+    branches: [master, 'claude/**']
   pull_request:
+
+permissions:
+  contents: write
 
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -19,3 +26,8 @@ jobs:
       - run: composer install --no-interaction --no-progress
 
       - run: vendor/bin/phpunit
+
+      # Fails if the branch isn't based on the current master; the next run has to rebase
+      - name: Move master to this branch
+        if: startsWith(github.ref, 'refs/heads/claude/') && github.event_name == 'push'
+        run: git push origin HEAD:master
