@@ -19,6 +19,11 @@
             "Sprainocchio\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Sprainocchio\\Tests\\": "tests/"
+        }
+    },
     "license": "MIT",
     "authors": [
         {
@@ -26,5 +31,11 @@
             "email": "manu@sprain.ch"
         }
     ],
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "require-dev": {
+        "phpunit/phpunit": "^13.4"
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
 }
