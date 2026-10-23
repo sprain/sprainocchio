@@ -22,7 +22,7 @@ You will see that it is a simple textfile written in [Markdown](https://github.c
 
 ## What else?
 
-Since this project is still in early-stage development, further improvements are not impossible.
+Planned improvements are tracked in the [issues on GitHub](https://github.com/sprain/sprainocchio/issues).
 You are welcome to contribute [on Github](https://github.com/sprain/sprainocchio).
 
 Oh, the template supports images, too:
