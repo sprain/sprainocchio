@@ -16,6 +16,9 @@ class Post
 
     protected ?string $author = null;
 
+    // Every field of the header, including ones the engine doesn't know, for themes
+    protected array $meta = [];
+
     protected ?string $summary = null;
 
     protected ?string $image = null;
@@ -56,6 +59,18 @@ class Post
     public function setSlug(?string $slug) : self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getMeta() : array
+    {
+        return $this->meta;
+    }
+
+    public function setMeta(array $meta) : self
+    {
+        $this->meta = $meta;
 
         return $this;
     }

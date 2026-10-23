@@ -32,6 +32,7 @@ class PostCreatorTest extends TestCase
             image: https://example.com/header.jpg
             slug: custom-slug
             author: Claude
+            coauthor: Someone
             +++
             # Body title
 
@@ -45,6 +46,8 @@ class PostCreatorTest extends TestCase
         $this->assertSame('https://example.com/header.jpg', $post->getImage());
         $this->assertSame('201906' . DIRECTORY_SEPARATOR . 'custom-slug.html', $post->getFilename());
         $this->assertSame('Claude', $post->getAuthor());
+        $this->assertSame('Someone', $post->getMeta()['coauthor']);
+        $this->assertSame('custom-slug', $post->getMeta()['slug']);
     }
 
     public function testDateIsOptionalForPages() : void
@@ -58,6 +61,7 @@ class PostCreatorTest extends TestCase
 
         $this->assertNull($page->getDate());
         $this->assertNull($page->getAuthor());
+        $this->assertSame(['title' => 'About'], $page->getMeta());
         $this->assertSame('About', $page->getTitle());
     }
 

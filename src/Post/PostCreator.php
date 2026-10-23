@@ -28,6 +28,7 @@ class PostCreator
             ->setTitle($this->getTitle())
             ->setSlug($this->getSlug())
             ->setAuthor($this->getMetaValue('author'))
+            ->setMeta($this->parseMetaContent())
             ->setSummary($this->getSummary())
             ->setImage($this->getImage())
             ->setTags($this->getTags())

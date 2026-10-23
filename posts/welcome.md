@@ -8,7 +8,7 @@ You will see that it is a simple textfile written in [Markdown](https://github.c
 * Create a new markdown file in `posts` with some contents.
 * Start it with a header that holds at least the post's date, followed by `+++`:
   `date: 2018-12-24` on the first line, `+++` on the second.
-  The header can also set `tags: [Business]`, `title`, `summary`, `image`, `author` and `slug` (the post's file name in the URL).
+  The header can also set `tags: [Business]`, `title`, `summary`, `image`, `author` and `slug` (the post's file name in the URL). Themes can read any other header field as `post.meta.<name>`.
 * Pages that don't belong in the post lists, like an about page, go into a `pages` folder. They don't need a date and are saved as `<slug>.html`.
 * Run `php sprainocchio/builder.php` again.
 * Reload this page.
