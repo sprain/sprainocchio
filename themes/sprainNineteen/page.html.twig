@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block headertags %}
+    <title>{{ page.title }}</title>
+    <meta name="description" content="{{ page.summary }}">
+{% endblock %}
+
+{% block content %}
+    <article>
+        {{ page.content|raw }}
+        {% if page.author %}<p><em>Written by {{ page.author }}</em></p>{% endif %}
+    </article>
+{% endblock %}

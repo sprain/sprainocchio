@@ -6,4 +6,5 @@ require __DIR__ . '/bootstrap.php';
 $container['themeDataCopier']->copyPublicData();
 $container['themeDataCopier']->copyStaticData($container['blogConfig']['staticPath']);
 $container['blogBuilder']->buildBlog();
+$container['pageBuilder']->buildPages();
 $container['redirectSaver']->save($container['blogConfig']['redirects']);

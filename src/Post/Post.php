@@ -14,6 +14,8 @@ class Post
 
     protected ?string $slug = null;
 
+    protected ?string $author = null;
+
     protected ?string $summary = null;
 
     protected ?string $image = null;
@@ -27,7 +29,7 @@ class Post
         return $this->date;
     }
 
-    public function setDate(\DateTime $date) : self
+    public function setDate(?\DateTime $date) : self
     {
         $this->date = $date;
 
@@ -54,6 +56,18 @@ class Post
     public function setSlug(?string $slug) : self
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getAuthor() : ?string
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?string $author) : self
+    {
+        $this->author = $author;
 
         return $this;
     }

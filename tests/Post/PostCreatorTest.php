@@ -31,6 +31,7 @@ class PostCreatorTest extends TestCase
             summary: Header summary
             image: https://example.com/header.jpg
             slug: custom-slug
+            author: Claude
             +++
             # Body title
 
@@ -43,6 +44,21 @@ class PostCreatorTest extends TestCase
         $this->assertSame('Header summary', $post->getSummary());
         $this->assertSame('https://example.com/header.jpg', $post->getImage());
         $this->assertSame('201906' . DIRECTORY_SEPARATOR . 'custom-slug.html', $post->getFilename());
+        $this->assertSame('Claude', $post->getAuthor());
+    }
+
+    public function testDateIsOptionalForPages() : void
+    {
+        file_put_contents($this->dir . '/page.md', "title: About\n+++\nText.");
+
+        $page = (new PostCreator(new \Parsedown()))->fromFile(
+            new SplFileInfo($this->dir . '/page.md', '', 'page.md'),
+            false
+        );
+
+        $this->assertNull($page->getDate());
+        $this->assertNull($page->getAuthor());
+        $this->assertSame('About', $page->getTitle());
     }
 
     public function testFallsBackToContent() : void

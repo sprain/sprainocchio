@@ -17,15 +17,17 @@ class PostCreator
     ) {
     }
 
-    public function fromFile(SplFileInfo $file) : Post
+    // Pages (see Page\PageBuilder) have no URL date, so they don't need one
+    public function fromFile(SplFileInfo $file, bool $requireDate = true) : Post
     {
         $this->file = $file;
         $this->rawContent = null;
 
         return (new Post())
-            ->setDate($this->getDate())
+            ->setDate($this->getDate($requireDate))
             ->setTitle($this->getTitle())
             ->setSlug($this->getSlug())
+            ->setAuthor($this->getMetaValue('author'))
             ->setSummary($this->getSummary())
             ->setImage($this->getImage())
             ->setTags($this->getTags())
@@ -80,9 +82,13 @@ class PostCreator
     }
 
     // Required, because the date is part of the post's URL and file dates change when files are copied
-    protected function getDate() : \DateTime
+    protected function getDate(bool $required) : ?\DateTime
     {
         $unixTimestamp = $this->getMetaValue('date');
+
+        if (null === $unixTimestamp && !$required) {
+            return null;
+        }
 
         if (!is_int($unixTimestamp)) {
             throw new \RuntimeException(sprintf(

@@ -27,7 +27,10 @@ class BuildTest extends TestCase
         file_put_contents($this->project . '/static/media/image.png', 'png');
 
         $this->writePost('faire-preise.md', "tags: [Business]\ndate: 2019-06-17\n+++\n# Faire Preise\n\nText.");
-        $this->writePost('ueber.md', "tags: [Über uns]\ndate: 2019-01-13\n+++\n# Für alle\n\nText.");
+        $this->writePost('ueber.md', "tags: [Über uns]\ndate: 2019-01-13\nauthor: Claude\n+++\n# Für alle\n\nText.");
+
+        mkdir($this->project . '/pages');
+        file_put_contents($this->project . '/pages/about.md', "slug: ueber\n+++\n# Über diesen Blog\n\nText.");
     }
 
     protected function tearDown() : void
@@ -50,6 +53,7 @@ class BuildTest extends TestCase
             'styles/styles.css',
             'media/image.png',
             'old/page.html',
+            'ueber.html',
         ] as $file) {
             $this->assertFileExists($this->project . '/public/' . $file);
         }
@@ -58,6 +62,10 @@ class BuildTest extends TestCase
             'url=https://example.com/blog/201906/faire-preise.html',
             file_get_contents($this->project . '/public/old/page.html')
         );
+
+        $this->assertStringContainsString('<h1>Über diesen Blog</h1>', file_get_contents($this->project . '/public/ueber.html'));
+        $this->assertStringContainsString('by Claude', file_get_contents($this->project . '/public/201901/fuer-alle.html'));
+        $this->assertStringNotContainsString('by ', file_get_contents($this->project . '/public/201906/faire-preise.html'));
 
         $this->assertStringContainsString(
             'href="https://example.com/blog/tags/ueber-uns/"',
@@ -73,6 +81,25 @@ class BuildTest extends TestCase
 
         $this->assertNotSame(0, $exitCode);
         $this->assertStringContainsString('would both be saved as 201906/faire-preise.html', $output);
+    }
+
+    public function testBuildsWithoutPagesFolder() : void
+    {
+        $this->removeDirectory($this->project . '/pages');
+
+        [$exitCode, $output] = $this->build();
+
+        $this->assertSame(0, $exitCode, $output);
+    }
+
+    public function testFailsOnPageNamedIndex() : void
+    {
+        file_put_contents($this->project . '/pages/home.md', "slug: index\n+++\n# Home\n");
+
+        [$exitCode, $output] = $this->build();
+
+        $this->assertNotSame(0, $exitCode);
+        $this->assertStringContainsString('cannot be saved as index.html', $output);
     }
 
     protected function build() : array

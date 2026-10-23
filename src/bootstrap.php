@@ -14,6 +14,7 @@ use Pimple\Container;
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
 use Sprainocchio\Blog\BlogBuilder;
+use Sprainocchio\Page\PageBuilder;
 use Sprainocchio\Redirect\RedirectSaver;
 use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostCreator;
@@ -118,6 +119,15 @@ $container['startpage'] = function($c) {
 $container['themeDataCopier'] = function($c) {
     return new DataCopier(
         $c['blogConfig']['themePath'],
+        $c['blogConfig']['publicPath']
+    );
+};
+
+$container['pageBuilder'] = function($c) use ($projectRoot) {
+    return new PageBuilder(
+        new PostFinder(new Finder(), $projectRoot . '/pages'),
+        $c['postCreator'],
+        $c['twig'],
         $c['blogConfig']['publicPath']
     );
 };
