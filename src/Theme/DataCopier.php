@@ -25,6 +25,14 @@ class DataCopier
         }
     }
 
+    // Copies the project's own files (e.g. images used in posts) into the public folder as they are
+    public function copyStaticData(string $staticPath) : void
+    {
+        if (is_dir($staticPath)) {
+            $this->rcopy($staticPath, $this->publicPath);
+        }
+    }
+
     protected function parseBuildConfig() : array
     {
         $configFile = $this->themePath . DIRECTORY_SEPARATOR . 'build.yml';

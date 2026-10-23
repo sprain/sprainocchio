@@ -25,6 +25,7 @@ class PostCreator
         return (new Post())
             ->setDate($this->getDate())
             ->setTitle($this->getTitle())
+            ->setSlug($this->getSlug())
             ->setSummary($this->getSummary())
             ->setImage($this->getImage())
             ->setTags($this->getTags())
@@ -73,12 +74,21 @@ class PostCreator
         return $image;
     }
 
+    protected function getSlug() : ?string
+    {
+        return $this->getMetaValue('slug');
+    }
+
+    // Required, because the date is part of the post's URL and file dates change when files are copied
     protected function getDate() : \DateTime
     {
         $unixTimestamp = $this->getMetaValue('date');
 
-        if (null === $unixTimestamp) {
-            $unixTimestamp = $this->file->getCTime();
+        if (!is_int($unixTimestamp)) {
+            throw new \RuntimeException(sprintf(
+                'Post %s needs a "date: YYYY-MM-DD" in its header',
+                $this->file->getRelativePathname()
+            ));
         }
 
         return (new \DateTime())->setTimestamp($unixTimestamp);

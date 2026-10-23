@@ -17,3 +17,9 @@ PHP 8.5 or newer with the `dom` and `iconv` extensions.
 
 3. Open the generated website.<br>
 `open sprainocchio/public/index.html`
+
+## Using sprainocchio in your own project
+
+Instead of writing posts inside the sprainocchio folder, you can keep your blog in its own project and require sprainocchio via Composer. Your project then holds `config.yml`, `posts/`, `themes/` and optionally `static/` (files copied into `public/` as they are, e.g. images). Build it from the project folder with:
+
+`vendor/bin/sprainocchio`

@@ -1,11 +1,20 @@
 <?php
 
-require __DIR__ . '/../vendor/autoload.php';
+// Standalone checkout has its own vendor/, installed as a dependency it lives in vendor/sprain/sprainocchio
+$autoloadFile = __DIR__ . '/../vendor/autoload.php';
+if (!file_exists($autoloadFile)) {
+    $autoloadFile = __DIR__ . '/../../../autoload.php';
+}
+require $autoloadFile;
+
+// The folder holding config.yml, posts/, themes/, static/ and public/; set by the caller
+$projectRoot ??= dirname(__DIR__);
 
 use Pimple\Container;
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
 use Sprainocchio\Blog\BlogBuilder;
+use Sprainocchio\Redirect\RedirectSaver;
 use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostSaver;
@@ -18,15 +27,17 @@ use Twig\Loader\FilesystemLoader;
 
 $container = new Container();
 
-$container['blogConfig'] = function($c) {
-    $blogConfigFile = __DIR__ . '/../config.yml';
+$container['blogConfig'] = function($c) use ($projectRoot) {
+    $blogConfigFile = $projectRoot . '/config.yml';
     if (!file_exists($blogConfigFile)) {
-        $blogConfigFile = __DIR__ . '/../config.dist.yml';
+        $blogConfigFile = $projectRoot . '/config.dist.yml';
     }
     $blogConfig = Yaml::parse(file_get_contents($blogConfigFile));
 
-    $blogConfig['themePath'] = __DIR__ . '/../themes/' . $blogConfig['theme'];
-    $blogConfig['publicPath'] = __DIR__ . '/../public/';
+    $blogConfig['themePath'] = $projectRoot . '/themes/' . $blogConfig['theme'];
+    $blogConfig['publicPath'] = $projectRoot . '/public/';
+    $blogConfig['staticPath'] = $projectRoot . '/static';
+    $blogConfig['redirects'] ??= [];
 
     if (!isset($blogConfig['baseUrl']) || null == $blogConfig['baseUrl']) {
         $blogConfig['baseUrl'] = $blogConfig['publicPath'];
@@ -60,10 +71,10 @@ $container['twig'] = function($c) {
     return $twig;
 };
 
-$container['postFinder'] = function($c) {
+$container['postFinder'] = function($c) use ($projectRoot) {
     return new PostFinder(
         new Finder(),
-        __DIR__ . '/../posts'
+        $projectRoot . '/posts'
     );
 };
 
@@ -108,6 +119,13 @@ $container['themeDataCopier'] = function($c) {
     return new DataCopier(
         $c['blogConfig']['themePath'],
         $c['blogConfig']['publicPath']
+    );
+};
+
+$container['redirectSaver'] = function($c) {
+    return new RedirectSaver(
+        $c['blogConfig']['publicPath'],
+        $c['blogConfig']['baseUrl']
     );
 };
 

@@ -11,6 +11,9 @@
         "pimple/pimple": "^3.5",
         "symfony/yaml": "^8.0"
     },
+    "bin": [
+        "bin/sprainocchio"
+    ],
     "autoload": {
         "psr-4": {
             "Sprainocchio\\": "src/"

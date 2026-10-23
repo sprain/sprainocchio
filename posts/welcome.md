@@ -1,9 +1,14 @@
+date: 2018-12-24
++++
 # Welcome to sprainocchio
 You can find the source for this post in the project folder you just created in `posts/welcome.md`.
 You will see that it is a simple textfile written in [Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) format.
 
 ## Adding a new post is simple
 * Create a new markdown file in `posts` with some contents.
+* Start it with a header that holds at least the post's date, followed by `+++`:
+  `date: 2018-12-24` on the first line, `+++` on the second.
+  The header can also set `tags: [Business]`, `title`, `summary`, `image` and `slug` (the post's file name in the URL).
 * Run `php sprainocchio/builder.php` again.
 * Reload this page.
 

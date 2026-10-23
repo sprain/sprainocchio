@@ -12,6 +12,8 @@ class Post
 
     protected ?string $title = null;
 
+    protected ?string $slug = null;
+
     protected ?string $summary = null;
 
     protected ?string $image = null;
@@ -40,6 +42,18 @@ class Post
     public function setTitle(?string $title) : self
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getSlug() : ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug) : self
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -96,7 +110,7 @@ class Post
     {
         return $this->getDate()->format('Ym')
             . DIRECTORY_SEPARATOR
-            . $this->urlize($this->getTitle() ?? '')
+            . ($this->getSlug() ?? $this->urlize($this->getTitle() ?? ''))
             . '.html';
     }
 }

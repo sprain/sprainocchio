@@ -1,6 +1,5 @@
 <?php
 
-require 'src/bootstrap.php';
+$projectRoot = __DIR__;
 
-$container['themeDataCopier']->copyPublicData();
-$container['blogBuilder']->buildBlog();
+require __DIR__ . '/src/build.php';

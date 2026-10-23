@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+// Builds the blog in the current folder, for projects that require sprainocchio via Composer
+$projectRoot = getcwd();
+
+require __DIR__ . '/../src/build.php';

@@ -89,8 +89,23 @@ class BlogBuilder
     {
         $posts = [];
 
+        $sourceFiles = [];
+
         foreach ($this->postFinder->getPostFiles() as $file) {
-            $posts[] = $this->postCreator->fromFile($file);
+            $post = $this->postCreator->fromFile($file);
+
+            $filename = $post->getFilename();
+            if (isset($sourceFiles[$filename])) {
+                throw new \RuntimeException(sprintf(
+                    'Posts %s and %s would both be saved as %s',
+                    $sourceFiles[$filename],
+                    $file->getRelativePathname(),
+                    $filename
+                ));
+            }
+            $sourceFiles[$filename] = $file->getRelativePathname();
+
+            $posts[] = $post;
         }
 
         usort($posts, fn(Post $a, Post $b) => $b->getDate() <=> $a->getDate());
