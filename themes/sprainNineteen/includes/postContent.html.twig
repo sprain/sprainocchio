@@ -1,6 +1,6 @@
 <article>
     <p>
-        <time>{{ post.date|date('d. F Y') }}</time>
+        <time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('d. F Y') }}</time>
         {% if post.author %} | by {{ post.author }}{% endif %}
         {% if post.tags|length %} |
             <span id="tags">
