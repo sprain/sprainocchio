@@ -28,6 +28,21 @@ Instead of writing posts inside the sprainocchio folder, you can keep your blog 
 
 `vendor/bin/sprainocchio`
 
+## Feed
+
+Every build writes an Atom feed of the 20 newest posts to `public/feed.xml`. Set its title and the default author in `config.yml`:
+
+```yaml
+title: My blog
+author: Jane Doe
+```
+
+Posts with their own `author` keep it in the feed. Link the feed in your theme's `<head>` so feed readers find it:
+
+```twig
+<link rel="alternate" type="application/atom+xml" href="{{ baseUrl }}feed.xml">
+```
+
 ## Development
 
 `vendor/bin/phpunit` runs the tests. GitHub Actions runs them on every push and pull request.

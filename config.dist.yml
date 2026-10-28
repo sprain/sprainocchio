@@ -1,2 +1,6 @@
 theme: sprainNineteen
 baseUrl: ~
+
+# Title and default author of the Atom feed (public/feed.xml)
+title: My blog
+author: ~

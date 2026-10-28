@@ -4,6 +4,12 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.4.0 – 2026-10-28
+
+### Added
+- An Atom feed of the 20 newest posts at `public/feed.xml`, with full content, summary, tags, author and, from the header field `coauthor`, a contributor ([#1](https://github.com/sprain/sprainocchio/issues/1)). New settings in `config.yml`: `title` (the feed's title, default «Blog») and `author` (for posts without their own `author`). Relative links in posts resolve against `baseUrl`.
+- sprainNineteen links the feed with `<link rel="alternate">`, so browsers and feed readers find it.
+
 ## 0.3.1 – 2026-10-28
 
 ### Changed
