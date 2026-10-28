@@ -14,6 +14,7 @@ use Pimple\Container;
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
 use Sprainocchio\Blog\BlogBuilder;
+use Sprainocchio\Feed\FeedSaver;
 use Sprainocchio\Page\PageBuilder;
 use Sprainocchio\Redirect\RedirectSaver;
 use Sprainocchio\Post\PostFinder;
@@ -39,6 +40,8 @@ $container['blogConfig'] = function($c) use ($projectRoot) {
     $blogConfig['publicPath'] = $projectRoot . '/public/';
     $blogConfig['staticPath'] = $projectRoot . '/static';
     $blogConfig['redirects'] ??= [];
+    $blogConfig['title'] ??= 'Blog';
+    $blogConfig['author'] ??= null;
 
     if (!isset($blogConfig['baseUrl']) || null == $blogConfig['baseUrl']) {
         $blogConfig['baseUrl'] = $blogConfig['publicPath'];
@@ -139,6 +142,15 @@ $container['redirectSaver'] = function($c) {
     );
 };
 
+$container['feedSaver'] = function($c) {
+    return new FeedSaver(
+        $c['blogConfig']['publicPath'],
+        $c['blogConfig']['baseUrl'],
+        $c['blogConfig']['title'],
+        $c['blogConfig']['author']
+    );
+};
+
 $container['blogBuilder'] = function($c) {
     return new BlogBuilder(
         $c['postFinder'],
@@ -147,6 +159,7 @@ $container['blogBuilder'] = function($c) {
         $c['archiveSaver'],
         $c['mainArchive'],
         $c['tagsArchive'],
-        $c['startpage']
+        $c['startpage'],
+        $c['feedSaver']
     );
 };

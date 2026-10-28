@@ -4,6 +4,7 @@ namespace Sprainocchio\Blog;
 
 use Sprainocchio\Archive\Archive;
 use Sprainocchio\Archive\ArchiveSaver;
+use Sprainocchio\Feed\FeedSaver;
 use Sprainocchio\Post\Post;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostFinder;
@@ -18,7 +19,8 @@ class BlogBuilder
         protected ArchiveSaver $archiveSaver,
         protected Archive $mainArchive,
         protected Archive $tagArchive,
-        protected Archive $startpage
+        protected Archive $startpage,
+        protected ?FeedSaver $feedSaver = null
     ) {
     }
 
@@ -30,6 +32,7 @@ class BlogBuilder
         $this->buildMainArchive($posts);
         $this->buildTagArchives($posts);
         $this->buildStartpage($posts);
+        $this->feedSaver?->save($posts);
     }
 
     protected function buildPosts(array $posts) : void

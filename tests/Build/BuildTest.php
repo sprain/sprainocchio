@@ -20,6 +20,7 @@ class BuildTest extends TestCase
         file_put_contents($this->project . '/config.yml', <<<YML
             theme: sprainNineteen
             baseUrl: https://example.com/blog/
+            title: Testblog
             redirects:
               old/page.html: 201906/faire-preise.html
             YML);
@@ -54,6 +55,7 @@ class BuildTest extends TestCase
             'media/image.png',
             'old/page.html',
             'ueber.html',
+            'feed.xml',
         ] as $file) {
             $this->assertFileExists($this->project . '/public/' . $file);
         }
@@ -66,6 +68,16 @@ class BuildTest extends TestCase
         $this->assertStringContainsString('<h1>Über diesen Blog</h1>', file_get_contents($this->project . '/public/ueber.html'));
         $this->assertStringContainsString('by Claude', file_get_contents($this->project . '/public/201901/fuer-alle.html'));
         $this->assertStringNotContainsString('by ', file_get_contents($this->project . '/public/201906/faire-preise.html'));
+
+        $feed = file_get_contents($this->project . '/public/feed.xml');
+        $this->assertStringContainsString('<title>Testblog</title>', $feed);
+        $this->assertStringContainsString('<id>https://example.com/blog/201906/faire-preise.html</id>', $feed);
+        $this->assertStringContainsString('<name>Claude</name>', $feed);
+        $this->assertStringNotContainsString('Über diesen Blog', $feed, 'Pages are not posts');
+        $this->assertStringContainsString(
+            'href="https://example.com/blog/feed.xml"',
+            file_get_contents($this->project . '/public/index.html')
+        );
 
         $this->assertStringContainsString(
             'href="https://example.com/blog/tags/ueber-uns/"',
