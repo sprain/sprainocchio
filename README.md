@@ -28,6 +28,17 @@ Instead of writing posts inside the sprainocchio folder, you can keep your blog 
 
 `vendor/bin/sprainocchio`
 
+## Theme assets
+
+Load stylesheets and other files from your theme with `asset()`, so browsers fetch them again after every change instead of showing a cached old version:
+
+```twig
+<link rel="stylesheet" href="{{ asset('styles/styles.css') }}">
+{# → https://example.com/blog/styles/styles.css?v=3f2a9c1e #}
+```
+
+The version is a hash of the file's content and changes only when the file does. The path is relative to `public/`, so it works for the theme's `public_dirs` and for `static/`. The build fails if the file doesn't exist.
+
 ## Feed
 
 Every build writes an Atom feed of the 20 newest posts to `public/feed.xml`. Set its title and the default author in `config.yml`:

@@ -69,6 +69,12 @@ class BuildTest extends TestCase
         $this->assertStringContainsString('by Claude', file_get_contents($this->project . '/public/201901/fuer-alle.html'));
         $this->assertStringNotContainsString('by ', file_get_contents($this->project . '/public/201906/faire-preise.html'));
 
+        $hash = substr(hash_file('xxh3', $this->project . '/public/styles/styles.css'), 0, 8);
+        $this->assertStringContainsString(
+            'href="https://example.com/blog/styles/styles.css?v=' . $hash . '"',
+            file_get_contents($this->project . '/public/201906/faire-preise.html')
+        );
+
         $feed = file_get_contents($this->project . '/public/feed.xml');
         $this->assertStringContainsString('<title>Testblog</title>', $feed);
         $this->assertStringContainsString('<id>https://example.com/blog/201906/faire-preise.html</id>', $feed);
