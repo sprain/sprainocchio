@@ -4,6 +4,14 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.5.0 – 2026-10-28
+
+### Added
+- Twig function `asset()`: `{{ asset('styles/styles.css') }}` returns the file's URL with a hash of its content (`…/styles/styles.css?v=3f2a9c1e`), so browsers load a stylesheet again as soon as it changed instead of showing a cached old version ([#13](https://github.com/sprain/sprainocchio/issues/13)). Works for files from the theme's `public_dirs` and from `static/`. The build fails if the file doesn't exist.
+
+### Changed
+- sprainNineteen loads its stylesheets with `asset()`.
+
 ## 0.4.0 – 2026-10-28
 
 ### Added

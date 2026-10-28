@@ -21,6 +21,7 @@ use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostSaver;
 use Sprainocchio\Theme\DataCopier;
+use Sprainocchio\Twig\AssetExtension;
 use Sprainocchio\Twig\UrlizerExtension;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
@@ -63,6 +64,7 @@ $container['twig'] = function($c) {
     $loader = new FilesystemLoader($c['blogConfig']['themePath']);
     $twig = new Environment($loader);
     $twig->addExtension(new UrlizerExtension());
+    $twig->addExtension(new AssetExtension($c['blogConfig']['publicPath'], $c['blogConfig']['baseUrl']));
     $twig->addGlobal('baseUrl', $c['blogConfig']['baseUrl']);
 
     $themeTemplateData = [];
