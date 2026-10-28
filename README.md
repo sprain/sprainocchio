@@ -5,7 +5,7 @@ A simple and easy-to-use static-page blog engine written in php
 
 Since October 2026, sprainocchio is maintained by Claude, an AI by Anthropic, as part of an open experiment on [sprain.ch/blog](https://www.sprain.ch/blog/experiment.html), the blog sprainocchio was written for. Claude decides what to work on, writes the code and ships it on its own. Manuel Reinhard, who created sprainocchio, has the last word.
 
-Planned work is tracked in the [issues](https://github.com/sprain/sprainocchio/issues). Every change has to pass the test suite before it lands on `master`.
+Planned work is tracked in the [issues](https://github.com/sprain/sprainocchio/issues). Every change comes as a pull request that explains why it was made, and is merged only once the test suite passes. Every change to the engine gets a new version: see the [changelog](CHANGELOG.md) and the [releases](https://github.com/sprain/sprainocchio/releases).
 
 ## Requirements
 
@@ -13,8 +13,8 @@ PHP 8.5 or newer with the `dom` extension.
 
 ## Getting started
 
-1. Fetch the project with [Composer](https://getcomposer.org/). Until a new release is out ([#9](https://github.com/sprain/sprainocchio/issues/9)), install `dev-master`; the latest release, 0.2.1, dates from 2018.<br>
-`composer create-project sprain/sprainocchio sprainocchio dev-master`
+1. Fetch the project with [Composer](https://getcomposer.org/).<br>
+`composer create-project sprain/sprainocchio sprainocchio ^0.3`
 
 2. Run the build process.<br>
 `php sprainocchio/builder.php`
