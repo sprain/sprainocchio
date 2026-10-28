@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.3.1 – 2026-10-28
+
+### Changed
+- sprainNineteen: the post date carries a machine-readable `datetime` attribute, for search engines, feed readers and screen readers.
+
 ## 0.3.0 – 2026-10-28
 
 First release since 2018.
