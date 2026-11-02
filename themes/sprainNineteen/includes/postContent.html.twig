@@ -1,4 +1,4 @@
-<article>
+<article class="post-{{ post.type }}">
     <p>
         <time datetime="{{ post.date|date('Y-m-d') }}">{{ post.date|date('d. F Y') }}</time>
         {% if post.author %} | by {{ post.author }}{% endif %}
@@ -10,5 +10,6 @@
             </span>
         {% endif %}
     </p>
-    {{ post.content|raw }}
+    {# A theme can render every post type its own way; types without a snippet look like articles #}
+    {% include ['includes/types/' ~ post.type ~ '.html.twig', 'includes/types/article.html.twig'] %}
 </article>

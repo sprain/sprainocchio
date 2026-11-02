@@ -4,6 +4,15 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.0 – 2026-11-02
+
+### Added
+- Quotes as a post type ([#11](https://github.com/sprain/sprainocchio/issues/11)). A post with `type: quote` in its header is a quote: its body is the quoted text, `source` (required) names who said or wrote it, `source_url` and a short Markdown `description` are optional. Without `type`, a post is an article as before. A quote gets its own page like an article and appears in archives, tag pages and the feed; without `title` its source serves as title, without `slug` the URL is made of the source and the first words of the quote. The build fails with a clear message when `source` is missing or `type` is unknown.
+- `post.type`, `post.source`, `post.sourceUrl` and `post.description` in templates. In the feed, a quote's content contains the quote, its source and the description.
+- sprainNineteen renders each post type with its own snippet in `includes/types/<type>.html.twig` (falling back to `article.html.twig`), shows quotes as a large block quote with their source, and marks them in lists.
+
+Links as a post type follow later.
+
 ## 0.5.0 – 2026-10-28
 
 ### Added

@@ -3,11 +3,14 @@
 namespace Sprainocchio\Post;
 
 use Dom\HTMLDocument;
+use Sprainocchio\Util\Urlizer;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Yaml\Yaml;
 
 class PostCreator
 {
+    use Urlizer;
+
     protected ?string $rawContent = null;
 
     protected SplFileInfo $file;
@@ -23,10 +26,17 @@ class PostCreator
         $this->file = $file;
         $this->rawContent = null;
 
+        $type = $this->getType();
+        $source = $this->getSource($type);
+
         return (new Post())
+            ->setType($type)
+            ->setSource($source)
+            ->setSourceUrl($this->getStringMetaValue('source_url'))
+            ->setDescription($this->getDescription())
             ->setDate($this->getDate($requireDate))
-            ->setTitle($this->getTitle())
-            ->setSlug($this->getSlug())
+            ->setTitle($this->getTitle($type, $source))
+            ->setSlug($this->getSlug($type, $source))
             ->setAuthor($this->getMetaValue('author'))
             ->setMeta($this->parseMetaContent())
             ->setSummary($this->getSummary())
@@ -35,9 +45,52 @@ class PostCreator
             ->setContent($this->getHtml());
     }
 
-    protected function getTitle() : ?string
+    protected function getType() : string
+    {
+        $type = $this->getMetaValue('type') ?? Post::TYPE_ARTICLE;
+
+        if (!in_array($type, Post::TYPES, true)) {
+            throw new \RuntimeException(sprintf(
+                'Post %s has the unknown type "%s"; known types are: %s',
+                $this->file->getRelativePathname(),
+                is_scalar($type) ? $type : get_debug_type($type),
+                implode(', ', Post::TYPES)
+            ));
+        }
+
+        return $type;
+    }
+
+    protected function getSource(string $type) : ?string
+    {
+        $source = $this->getStringMetaValue('source');
+
+        if (Post::TYPE_QUOTE === $type && null === $source) {
+            throw new \RuntimeException(sprintf(
+                'Quote %s needs a "source: …" in its header',
+                $this->file->getRelativePathname()
+            ));
+        }
+
+        return $source;
+    }
+
+    // Short note in Markdown, rendered as HTML
+    protected function getDescription() : ?string
+    {
+        $description = $this->getStringMetaValue('description');
+
+        return null === $description ? null : $this->mdParser->text($description);
+    }
+
+    // Quotes usually have no heading, so their source serves as the title
+    protected function getTitle(string $type = Post::TYPE_ARTICLE, ?string $source = null) : ?string
     {
         $title = $this->getMetaValue('title');
+
+        if (null === $title && Post::TYPE_QUOTE === $type) {
+            $title = $source;
+        }
 
         if (null === $title) {
             $titles = $this->parseHtml()->getElementsByTagName('h1');
@@ -77,9 +130,29 @@ class PostCreator
         return $image;
     }
 
-    protected function getSlug() : ?string
+    // Quotes without a slug: the source and the first words of the quote, e.g. grace-hopper-the-most-dangerous-phrase
+    protected function getSlug(string $type = Post::TYPE_ARTICLE, ?string $source = null) : ?string
     {
-        return $this->getMetaValue('slug');
+        $slug = $this->getMetaValue('slug');
+
+        if (null === $slug && Post::TYPE_QUOTE === $type) {
+            $text = $this->parseHtml()->body?->textContent ?? '';
+            $words = array_slice(preg_split('~\s+~u', trim($text), -1, PREG_SPLIT_NO_EMPTY), 0, 6);
+            $slug = $this->urlize($source . ' ' . implode(' ', $words));
+        }
+
+        return $slug;
+    }
+
+    protected function getStringMetaValue(string $value) : ?string
+    {
+        $metaValue = $this->getMetaValue($value);
+
+        if (null === $metaValue || '' === trim((string) $metaValue)) {
+            return null;
+        }
+
+        return trim((string) $metaValue);
     }
 
     // Required, because the date is part of the post's URL and file dates change when files are copied

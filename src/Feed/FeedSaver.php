@@ -86,10 +86,26 @@ class FeedSaver
 
             // Feed readers show the title themselves, so a leading <h1> would appear twice
             $content = preg_replace('~^\s*<h1>.*?</h1>\s*~s', '', $post->getContent() ?? '', 1);
+            if (Post::TYPE_QUOTE === $post->getType()) {
+                $content = $this->getQuoteHtml($post, $content);
+            }
             $this->addText($entry, 'content', $content)->setAttribute('type', 'html');
         }
 
         return $doc->saveXML();
+    }
+
+    // Feed readers don't know the theme, so a quote carries its source and note in the content
+    protected function getQuoteHtml(Post $post, string $content) : string
+    {
+        $source = htmlspecialchars($post->getSource() ?? '');
+        if (null !== $post->getSourceUrl()) {
+            $source = sprintf('<a href="%s">%s</a>', htmlspecialchars($post->getSourceUrl()), $source);
+        }
+
+        return '<blockquote>' . $content . '</blockquote>'
+            . '<p>— ' . $source . '</p>'
+            . ($post->getDescription() ?? '');
     }
 
     protected function addElement(\DOMElement $parent, string $name) : \DOMElement
