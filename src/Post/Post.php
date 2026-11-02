@@ -8,6 +8,12 @@ class Post
 {
     use Urlizer;
 
+    public const string TYPE_ARTICLE = 'article';
+
+    public const string TYPE_QUOTE = 'quote';
+
+    public const array TYPES = [self::TYPE_ARTICLE, self::TYPE_QUOTE];
+
     protected ?\DateTime $date = null;
 
     protected ?string $title = null;
@@ -26,6 +32,15 @@ class Post
     protected array $tags = [];
 
     protected ?string $content = null;
+
+    protected string $type = self::TYPE_ARTICLE;
+
+    // Quotes: who said or wrote it, where it was published and an optional note (HTML)
+    protected ?string $source = null;
+
+    protected ?string $sourceUrl = null;
+
+    protected ?string $description = null;
 
     public function getDate() : ?\DateTime
     {
@@ -131,6 +146,54 @@ class Post
     public function setContent(string $content) : self
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getType() : string
+    {
+        return $this->type;
+    }
+
+    public function setType(string $type) : self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getSource() : ?string
+    {
+        return $this->source;
+    }
+
+    public function setSource(?string $source) : self
+    {
+        $this->source = $source;
+
+        return $this;
+    }
+
+    public function getSourceUrl() : ?string
+    {
+        return $this->sourceUrl;
+    }
+
+    public function setSourceUrl(?string $sourceUrl) : self
+    {
+        $this->sourceUrl = $sourceUrl;
+
+        return $this;
+    }
+
+    public function getDescription() : ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description) : self
+    {
+        $this->description = $description;
 
         return $this;
     }

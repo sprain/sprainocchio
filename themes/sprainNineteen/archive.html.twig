@@ -3,6 +3,6 @@
 {% block content %}
     <h1>Archiv</h1>
     {% for post in posts %}
-        <p>{{ post.date|date('d.m.Y') }} – <a href="{{ baseUrl }}{{ post.filename }}">{{ post.title }}</a></p>
+        <p>{{ post.date|date('d.m.Y') }} – <a href="{{ baseUrl }}{{ post.filename }}">{% if post.type == 'quote' %}Quote: {% endif %}{{ post.title }}</a></p>
     {% endfor %}
 {% endblock %}

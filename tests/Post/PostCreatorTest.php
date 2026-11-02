@@ -116,6 +116,66 @@ class PostCreatorTest extends TestCase
         $this->createPost("# Title without header\n");
     }
 
+    public function testPostsAreArticlesByDefault() : void
+    {
+        $post = $this->createPost("date: 2019-01-13\n+++\n# Title\n\nText.");
+
+        $this->assertSame('article', $post->getType());
+        $this->assertNull($post->getSource());
+    }
+
+    public function testReadsQuote() : void
+    {
+        $post = $this->createPost(<<<MD
+            type: quote
+            date: 2026-11-02
+            tags: [Leben]
+            source: Grace Hopper
+            source_url: https://example.com/hopper
+            description: Why I *like* this one
+            +++
+            The most dangerous phrase in the language is "We've always done it this way."
+            MD);
+
+        $this->assertSame('quote', $post->getType());
+        $this->assertSame('Grace Hopper', $post->getSource());
+        $this->assertSame('https://example.com/hopper', $post->getSourceUrl());
+        $this->assertSame('<p>Why I <em>like</em> this one</p>', $post->getDescription());
+        $this->assertSame('Grace Hopper', $post->getTitle());
+        $this->assertStringContainsString('The most dangerous phrase', $post->getContent());
+        $this->assertStringContainsString('The most dangerous phrase', $post->getSummary());
+        $this->assertSame(
+            '202611' . DIRECTORY_SEPARATOR . 'grace-hopper-the-most-dangerous-phrase-in-the.html',
+            $post->getFilename()
+        );
+    }
+
+    public function testQuoteKeepsTitleAndSlugFromHeader() : void
+    {
+        $post = $this->createPost("type: quote\ndate: 2026-11-02\nsource: Grace Hopper\ntitle: Gewohnheit\nslug: gewohnheit\n+++\nText.");
+
+        $this->assertSame('Gewohnheit', $post->getTitle());
+        $this->assertSame('202611' . DIRECTORY_SEPARATOR . 'gewohnheit.html', $post->getFilename());
+        $this->assertNull($post->getSourceUrl());
+        $this->assertNull($post->getDescription());
+    }
+
+    public function testQuoteRequiresSource() : void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Quote post.md needs a "source: …"');
+
+        $this->createPost("type: quote\ndate: 2026-11-02\n+++\nText.");
+    }
+
+    public function testRejectsUnknownType() : void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('unknown type "video"');
+
+        $this->createPost("type: video\ndate: 2026-11-02\n+++\nText.");
+    }
+
     protected function createPost(string $content) : \Sprainocchio\Post\Post
     {
         file_put_contents($this->dir . '/post.md', $content);

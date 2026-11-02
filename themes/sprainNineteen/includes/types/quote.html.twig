@@ -1,0 +1,5 @@
+<figure class="quote">
+    <blockquote>{{ post.content|raw }}</blockquote>
+    <figcaption>— {% if post.sourceUrl %}<a href="{{ post.sourceUrl }}">{{ post.source }}</a>{% else %}{{ post.source }}{% endif %}</figcaption>
+</figure>
+{% if post.description %}{{ post.description|raw }}{% endif %}

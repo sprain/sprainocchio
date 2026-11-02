@@ -124,3 +124,20 @@ article {
 	background-color: rgba(0,0,0,0.9);
 	color: rgba(210,215,220);
 }
+.quote {
+	margin: 2rem 0;
+}
+.quote blockquote {
+	border-left: 4px solid rgb(80,115,135);
+	padding-left: 1.5rem;
+	font-size: 1.4rem;
+	line-height: 1.5;
+}
+.quote blockquote p {
+	font-size: inherit;
+	line-height: inherit;
+}
+.quote figcaption {
+	padding-left: calc(1.5rem + 4px);
+	color: rgba(0,0,0,0.6);
+}

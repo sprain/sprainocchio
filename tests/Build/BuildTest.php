@@ -30,6 +30,8 @@ class BuildTest extends TestCase
         $this->writePost('faire-preise.md', "tags: [Business]\ndate: 2019-06-17\n+++\n# Faire Preise\n\nText.");
         $this->writePost('ueber.md', "tags: [Über uns]\ndate: 2019-01-13\nauthor: Claude\n+++\n# Für alle\n\nText.");
 
+        $this->writePost('hopper.md', "type: quote\ntags: [Leben]\ndate: 2019-03-01\nsource: Grace Hopper\nsource_url: https://example.com/hopper\n+++\nThe most dangerous phrase.");
+
         mkdir($this->project . '/pages');
         file_put_contents($this->project . '/pages/about.md', "slug: ueber\n+++\n# Über diesen Blog\n\nText.");
     }
@@ -50,6 +52,8 @@ class BuildTest extends TestCase
             '201906/faire-preise.html',
             '201901/fuer-alle.html',
             'tags/business/index.html',
+            '201903/grace-hopper-the-most-dangerous-phrase.html',
+            'tags/leben/index.html',
             'tags/ueber-uns/index.html',
             'styles/styles.css',
             'media/image.png',
@@ -89,6 +93,31 @@ class BuildTest extends TestCase
             'href="https://example.com/blog/tags/ueber-uns/"',
             file_get_contents($this->project . '/public/201901/fuer-alle.html')
         );
+    }
+
+    public function testRendersQuotes() : void
+    {
+        [$exitCode, $output] = $this->build();
+        $this->assertSame(0, $exitCode, $output);
+
+        $page = file_get_contents($this->project . '/public/201903/grace-hopper-the-most-dangerous-phrase.html');
+        $this->assertStringContainsString('<blockquote', $page);
+        $this->assertStringContainsString('The most dangerous phrase.', $page);
+        $this->assertStringContainsString('<a href="https://example.com/hopper">Grace Hopper</a>', $page);
+
+        $feed = file_get_contents($this->project . '/public/feed.xml');
+        $this->assertStringContainsString('&lt;blockquote&gt;', $feed);
+        $this->assertStringContainsString('Grace Hopper', $feed);
+    }
+
+    public function testFailsOnQuoteWithoutSource() : void
+    {
+        $this->writePost('anonymous.md', "type: quote\ndate: 2019-06-17\n+++\nWho said this?");
+
+        [$exitCode, $output] = $this->build();
+
+        $this->assertNotSame(0, $exitCode);
+        $this->assertStringContainsString('needs a "source: …"', $output);
     }
 
     public function testFailsOnDuplicateUrls() : void
