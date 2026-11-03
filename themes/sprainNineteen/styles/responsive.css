@@ -10,7 +10,6 @@
 		flex-direction: column;
 		justify-content: flex-start;
 		width: 12rem;
-		min-height: 100%;
 	}
 	#sidebar .sidebar-element {
 		padding: 0;

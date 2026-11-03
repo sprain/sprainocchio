@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.1 – 2026-11-03
+
+### Fixed
+- sprainNineteen: on wide screens the colored sidebar now reaches the bottom of the window on short pages such as an archive with few posts, instead of ending right after its content ([#10](https://github.com/sprain/sprainocchio/issues/10)). `#container` is at least as tall as the window; the ineffective `min-height: 100%` on `#sidebar` is gone. In the stacked layout on narrow screens, the colored area below the sidebar now reaches the bottom too.
+
 ## 0.6.0 – 2026-11-02
 
 ### Added
