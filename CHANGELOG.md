@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.2 – 2026-11-09
+
+### Fixed
+- sprainNineteen: the photo in the sidebar, which links to the home page, now has a text alternative («<your_name>, home page»). Screen readers announced it as an unnamed link before, and it was the only way back to the home page.
+
 ## 0.6.1 – 2026-11-03
 
 ### Fixed
