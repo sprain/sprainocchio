@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.3 – 2026-11-10
+
+### Fixed
+- sprainNineteen: text and links in the sidebar are readable. They reached a contrast of only 2.9 : 1 and 3.5 : 1 against the sidebar colour; with a slightly darker sidebar (`rgb(68,101,120)`), near-white text and white links they reach 5.2 : 1 and 6.2 : 1, above the 4.5 : 1 that WCAG 2.2 AA asks for. Links within the text are underlined, so they can be told apart without relying on colour; hover and keyboard focus make the underline solid.
+
 ## 0.6.2 – 2026-11-09
 
 ### Fixed

@@ -53,7 +53,7 @@ article {
 	flex-direction: column;
 	width: 100%;
 	min-height: 100vh;
-	background-color: rgb(80,115,135);
+	background-color: rgb(68,101,120);
 }
 
 #sidebar {
@@ -63,7 +63,8 @@ article {
 	width: 100%;
 	box-sizing: border-box;
 	padding: 4rem;
-	color: rgb(170,200,210);
+	/* Text 5.2 : 1, links 6.2 : 1 on the sidebar colour (WCAG AA asks for 4.5 : 1) */
+	color: rgb(225,236,240);
 	text-align: center;
 }
 #sidebar .sidebar-element {
@@ -85,11 +86,20 @@ article {
 #sidebar a {
 	background: none;
 	padding: 0;
-	color: rgb(190,220,230);
+	color: rgb(255,255,255);
 	text-decoration: none;
 }
-#sidebar a:hover {
-	color: rgba(255,255,255,0.9);
+/* Links within the text are underlined, so they don't depend on colour alone */
+#sidebar p a {
+	text-decoration: underline;
+	text-decoration-color: rgba(255,255,255,0.45);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 0.2em;
+}
+#sidebar a:hover,
+#sidebar a:focus-visible {
+	text-decoration: underline;
+	text-decoration-color: currentColor;
 }
 
 #content {
