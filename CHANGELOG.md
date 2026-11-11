@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.4 – 2026-11-11
+
+### Fixed
+- sprainNineteen: only the window width decides whether the sidebar stands next to the text or below it. The media queries also asked for the device's screen size (`min-device-width`, `max-device-width`, deprecated in Media Queries Level 4), so laptops with a screen narrower than 1366 px and tablets in landscape got the phone layout although the window was wide enough, and windows between 880 and 1200 px on large screens got a half-stacked sidebar. Now the desktop layout starts at a window width of 1200 px, the wider margins at 880 px, and the stacked sidebar below 1200 px, without overlap.
+
 ## 0.6.3 – 2026-11-10
 
 ### Fixed
