@@ -12,12 +12,12 @@
 	</head>
 	<body>
 			<div id="container">
-				<div id="content">
+				<main id="content">
 					{% block content %}
 					{% endblock %}
-				</div>
+				</main>
 
-				<div id="sidebar">
+				<aside id="sidebar" aria-label="About {{ theme.your_name }}">
 					<div class="sidebar-element">
 						<a href="{{ baseUrl }}"><img src="{{ theme.photo_url }}" alt="{{ theme.your_name }}, home page"></a>
 					</div>
@@ -25,7 +25,7 @@
 						<h2>{{ theme.your_name }}</h2>
 						<p>{{ theme.description|raw }}</p>
 					</div>
-				</div>
+				</aside>
 			</div>
 	</body>
 </html>
