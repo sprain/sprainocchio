@@ -4,6 +4,11 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.6.5 – 2026-11-13
+
+### Fixed
+- sprainNineteen: pages have landmarks for screen readers. The content is a `<main id="content">` and the sidebar an `<aside id="sidebar">` labelled «About <your_name>», instead of two `<div>`s, so screen reader users can jump straight to the text and reader modes find it (WCAG 1.3.1, 2.4.1). The IDs stay the same, so the look does not change and custom styles keep working; `main` is added to the reset stylesheet for older browsers.
+
 ## 0.6.4 – 2026-11-11
 
 ### Fixed
