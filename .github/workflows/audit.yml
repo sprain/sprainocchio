@@ -1,0 +1,62 @@
+name: Security audit
+
+# Checks the packages in composer.lock against known security advisories: weekly, after every change to
+# composer.lock on the default branch, and by hand. It never blocks a build or deploy. When it finds
+# something, it opens an issue (or comments on the open one), so the next scheduled run of Claude sees it.
+on:
+  schedule:
+    - cron: '17 4 * * 1'
+  push:
+    branches: [master]
+    paths: [composer.lock]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPO: ${{ github.repository }}
+      TITLE: 'Security advisory: composer audit'
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          coverage: none
+
+      - name: Audit
+        run: |
+          set +e
+          composer audit --locked --no-interaction --abandoned=ignore > audit.txt 2>&1
+          status=$?
+          set -e
+          cat audit.txt
+          if [ "$status" = 0 ]; then
+            echo "No known advisories."
+            exit 0
+          fi
+          echo "::warning::composer audit found advisories (exit code $status)"
+          {
+            echo '`composer audit` reports known security advisories for packages in `composer.lock`. Update the affected packages.'
+            echo
+            echo '```'
+            cat audit.txt
+            echo '```'
+            echo
+            echo "Run: $GITHUB_SERVER_URL/$REPO/actions/runs/$GITHUB_RUN_ID"
+          } > body.md
+          open=$(gh api "repos/$REPO/issues?state=open&labels=audit&per_page=100" --jq "[.[] | select(.title == env.TITLE)][0].number // empty")
+          if [ -n "$open" ]; then
+            gh api "repos/$REPO/issues/$open/comments" -F body=@body.md > /dev/null
+            echo "Commented on #$open"
+          else
+            gh api "repos/$REPO/labels" -f name=audit -f color=b60205 > /dev/null 2>&1 || true
+            gh api "repos/$REPO/issues" -f title="$TITLE" -F body=@body.md -f 'labels[]=audit' > /dev/null
+            echo "Opened an issue"
+          fi
