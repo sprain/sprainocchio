@@ -48,6 +48,11 @@
 		padding-left: 4rem;
 		padding-right: 4rem;
 	}
+	#content figure {
+		padding-left: 4rem;
+		padding-right: 4rem;
+		max-width: 40rem;
+	}
 }
 
 @media (max-width: 1199.98px) {

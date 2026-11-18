@@ -176,6 +176,48 @@ class PostCreatorTest extends TestCase
         $this->createPost("type: video\ndate: 2026-11-02\n+++\nText.");
     }
 
+    public function testItalicLineBelowImageBecomesCaption() : void
+    {
+        $post = $this->createPost(<<<MD
+            date: 2026-11-18
+            +++
+            ![A house](house.jpg)
+            *Ronda*
+
+            [![A button](button.png)](https://example.com)
+            *Linked*
+            MD);
+
+        $this->assertStringContainsString(
+            '<figure><img src="house.jpg" alt="A house" /><figcaption>Ronda</figcaption></figure>',
+            $post->getContent()
+        );
+        $this->assertStringContainsString(
+            '<figure><a href="https://example.com"><img src="button.png" alt="A button" /></a><figcaption>Linked</figcaption></figure>',
+            $post->getContent()
+        );
+        $this->assertSame('house.jpg', $post->getImage());
+    }
+
+    public function testOtherImagesStayParagraphs() : void
+    {
+        $post = $this->createPost(<<<MD
+            date: 2026-11-18
+            +++
+            ![Alone](a.jpg)
+
+            ![Inline](b.jpg) and *some* text
+
+            ![Two](c.jpg)
+            *one* and *two*
+
+            Text with *emphasis*
+            MD);
+
+        $this->assertStringNotContainsString('<figure>', $post->getContent());
+        $this->assertStringContainsString('<p><img src="a.jpg" alt="Alone" /></p>', $post->getContent());
+    }
+
     protected function createPost(string $content) : \Sprainocchio\Post\Post
     {
         file_put_contents($this->dir . '/post.md', $content);
