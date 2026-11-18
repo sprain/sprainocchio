@@ -122,6 +122,20 @@ article {
 #content img {
 	width: 100%;
 }
+/* An image with an italic line right below it becomes a figure with a caption; same width as an image in its own paragraph */
+#content figure {
+	margin: 1.5rem 0 2rem;
+	padding-left: 2rem;
+	padding-right: 2rem;
+}
+#content figcaption {
+	margin-top: 0.5rem;
+	padding-left: 0.75rem;
+	border-left: 2px solid rgb(80,115,135);
+	font-size: 0.875rem;
+	line-height: 1.45;
+	color: rgba(0,0,0,0.65);
+}
 #content a {
 	text-decoration: none;
 	color: rgba(0,0,0,0.9);

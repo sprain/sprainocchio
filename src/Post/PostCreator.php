@@ -191,7 +191,20 @@ class PostCreator
     {
         $contentParts = $this->splitContent();
 
-        return $this->mdParser->text(end($contentParts));
+        return $this->addFigures($this->mdParser->text(end($contentParts)));
+    }
+
+    // An image alone in its paragraph with an italic line right below it becomes a figure with a caption:
+    // ![Alt text](image.jpg)
+    // *Caption*
+    // Linked images work too; anything else in the paragraph leaves it unchanged
+    protected function addFigures(string $html) : string
+    {
+        return preg_replace(
+            '~<p>((?:<a [^>]*>)?<img [^>]*>(?:</a>)?)\s*(?:<br\s*/?>)?\s*<em>((?:(?!</?em>).)+)</em></p>~s',
+            '<figure>$1<figcaption>$2</figcaption></figure>',
+            $html
+        );
     }
 
     protected function getMetaValue(string $value) : mixed

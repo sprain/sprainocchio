@@ -28,6 +28,15 @@ Instead of writing posts inside the sprainocchio folder, you can keep your blog 
 
 `vendor/bin/sprainocchio`
 
+## Image captions
+
+Put an italic line right below an image, and it becomes the image's caption (`<figure>` with `<figcaption>`):
+
+```markdown
+![A house above a gorge](ronda.jpg)
+*Ronda*
+```
+
 ## Theme assets
 
 Load stylesheets and other files from your theme with `asset()`, so browsers fetch them again after every change instead of showing a cached old version:
