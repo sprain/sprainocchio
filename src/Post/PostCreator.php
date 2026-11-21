@@ -28,14 +28,16 @@ class PostCreator
 
         $type = $this->getType();
         $source = $this->getSource($type);
+        $url = $this->getUrl($type);
 
         return (new Post())
             ->setType($type)
             ->setSource($source)
             ->setSourceUrl($this->getStringMetaValue('source_url'))
+            ->setUrl($url)
             ->setDescription($this->getDescription())
             ->setDate($this->getDate($requireDate))
-            ->setTitle($this->getTitle($type, $source))
+            ->setTitle($this->getTitle($type, $source, $url))
             ->setSlug($this->getSlug($type, $source))
             ->setAuthor($this->getMetaValue('author'))
             ->setMeta($this->parseMetaContent())
@@ -75,6 +77,21 @@ class PostCreator
         return $source;
     }
 
+    // Links need an absolute address to point to
+    protected function getUrl(string $type) : ?string
+    {
+        $url = $this->getStringMetaValue('url');
+
+        if (Post::TYPE_LINK === $type && (null === $url || !preg_match('~^https?://[^/\s]+~i', $url))) {
+            throw new \RuntimeException(sprintf(
+                'Link %s needs a "url: https://…" in its header',
+                $this->file->getRelativePathname()
+            ));
+        }
+
+        return $url;
+    }
+
     // Short note in Markdown, rendered as HTML
     protected function getDescription() : ?string
     {
@@ -83,13 +100,17 @@ class PostCreator
         return null === $description ? null : $this->mdParser->text($description);
     }
 
-    // Quotes usually have no heading, so their source serves as the title
-    protected function getTitle(string $type = Post::TYPE_ARTICLE, ?string $source = null) : ?string
+    // Quotes usually have no heading, so their source serves as the title; links without a title use their host
+    protected function getTitle(string $type = Post::TYPE_ARTICLE, ?string $source = null, ?string $url = null) : ?string
     {
         $title = $this->getMetaValue('title');
 
         if (null === $title && Post::TYPE_QUOTE === $type) {
             $title = $source;
+        }
+
+        if (null === $title && Post::TYPE_LINK === $type) {
+            $title = (new Post())->setUrl($url)->getDomain();
         }
 
         if (null === $title) {

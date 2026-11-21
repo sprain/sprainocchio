@@ -168,6 +168,57 @@ class PostCreatorTest extends TestCase
         $this->createPost("type: quote\ndate: 2026-11-02\n+++\nText.");
     }
 
+    public function testReadsLink() : void
+    {
+        $post = $this->createPost(<<<MD
+            type: link
+            date: 2026-11-21
+            url: https://www.example.com/article?id=1
+            title: Ein guter Artikel
+            +++
+            Warum ich das *lesenswert* finde.
+            MD);
+
+        $this->assertSame('link', $post->getType());
+        $this->assertSame('https://www.example.com/article?id=1', $post->getUrl());
+        $this->assertSame('example.com', $post->getDomain());
+        $this->assertSame('Ein guter Artikel', $post->getTitle());
+        $this->assertSame('Warum ich das lesenswert finde.', $post->getSummary());
+        $this->assertSame('202611' . DIRECTORY_SEPARATOR . 'ein-guter-artikel.html', $post->getFilename());
+    }
+
+    public function testLinkWithoutTitleUsesDomain() : void
+    {
+        $post = $this->createPost("type: link\ndate: 2026-11-21\nurl: https://blog.example.org/x\n+++\nText.");
+
+        $this->assertSame('blog.example.org', $post->getTitle());
+        $this->assertSame('202611' . DIRECTORY_SEPARATOR . 'blog-example-org.html', $post->getFilename());
+    }
+
+    public function testArticleHasNoUrl() : void
+    {
+        $post = $this->createPost("date: 2019-01-13\n+++\n# Title\n\nText.");
+
+        $this->assertNull($post->getUrl());
+        $this->assertNull($post->getDomain());
+    }
+
+    public function testLinkRequiresUrl() : void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('Link post.md needs a "url: https://…"');
+
+        $this->createPost("type: link\ndate: 2026-11-21\ntitle: Ohne Ziel\n+++\nText.");
+    }
+
+    public function testLinkRequiresAbsoluteUrl() : void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('needs a "url: https://…"');
+
+        $this->createPost("type: link\ndate: 2026-11-21\nurl: example.com/x\n+++\nText.");
+    }
+
     public function testRejectsUnknownType() : void
     {
         $this->expectException(\RuntimeException::class);

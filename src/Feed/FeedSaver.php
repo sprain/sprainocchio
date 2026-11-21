@@ -89,6 +89,9 @@ class FeedSaver
             if (Post::TYPE_QUOTE === $post->getType()) {
                 $content = $this->getQuoteHtml($post, $content);
             }
+            if (Post::TYPE_LINK === $post->getType()) {
+                $content = $this->getLinkHtml($post, $content);
+            }
             $this->addText($entry, 'content', $content)->setAttribute('type', 'html');
         }
 
@@ -106,6 +109,17 @@ class FeedSaver
         return '<blockquote>' . $content . '</blockquote>'
             . '<p>— ' . $source . '</p>'
             . ($post->getDescription() ?? '');
+    }
+
+    // A link's entry leads to the post's own page, so its content names the address it points to
+    protected function getLinkHtml(Post $post, string $content) : string
+    {
+        return sprintf(
+            '<p><a href="%s">%s</a> (%s)</p>',
+            htmlspecialchars($post->getUrl() ?? ''),
+            htmlspecialchars($post->getTitle() ?? ''),
+            htmlspecialchars($post->getDomain() ?? '')
+        ) . $content;
     }
 
     protected function addElement(\DOMElement $parent, string $name) : \DOMElement

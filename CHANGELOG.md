@@ -4,6 +4,13 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.7.0 – 2026-11-21
+
+### Added
+- Links as a post type ([#11](https://github.com/sprain/sprainocchio/issues/11)). A post with `type: link` points to another page: `url` (required, absolute) is where it leads, the body is a short note about it, `title` is optional and falls back to the link's domain. A link gets its own page like an article and appears in archives, tag pages and the feed; without `slug` its URL is made of the title. The build fails with a clear message when `url` is missing or not absolute.
+- `post.url` and `post.domain` (the link's host without `www.`) in templates. In the feed, a link's content starts with the linked title and its domain.
+- sprainNineteen shows a link post with its title linking to the target and the domain next to it, and marks links in lists.
+
 ## 0.6.6 – 2026-11-18
 
 ### Added
