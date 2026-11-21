@@ -28,6 +28,30 @@ Instead of writing posts inside the sprainocchio folder, you can keep your blog 
 
 `vendor/bin/sprainocchio`
 
+## Quotes and links
+
+Besides articles, a post can be a quote or a link, set with `type` in its header:
+
+```
+type: quote
+date: 2026-11-02
+source: Grace Hopper
+source_url: https://example.com/hopper   # optional
++++
+The most dangerous phrase in the language is "We've always done it this way."
+```
+
+```
+type: link
+date: 2026-11-21
+url: https://example.com/article
+title: The article's title               # optional, falls back to the domain
++++
+A short note on why it is worth reading.
+```
+
+Themes render each type with `includes/types/<type>.html.twig` and fall back to the article snippet; templates get `post.type`, `post.source`, `post.sourceUrl`, `post.url` and `post.domain`.
+
 ## Image captions
 
 Put an italic line right below an image, and it becomes the image's caption (`<figure>` with `<figcaption>`):

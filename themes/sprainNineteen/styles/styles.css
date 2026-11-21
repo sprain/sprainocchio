@@ -167,3 +167,12 @@ article {
 	padding-left: calc(1.5rem + 4px);
 	color: rgba(0,0,0,0.6);
 }
+.link {
+	margin: 2rem 0 1rem;
+	font-size: 1.4rem;
+	line-height: 1.5;
+}
+.link-domain {
+	font-size: 1rem;
+	color: rgba(0,0,0,0.6);
+}

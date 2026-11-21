@@ -12,7 +12,9 @@ class Post
 
     public const string TYPE_QUOTE = 'quote';
 
-    public const array TYPES = [self::TYPE_ARTICLE, self::TYPE_QUOTE];
+    public const string TYPE_LINK = 'link';
+
+    public const array TYPES = [self::TYPE_ARTICLE, self::TYPE_QUOTE, self::TYPE_LINK];
 
     protected ?\DateTime $date = null;
 
@@ -41,6 +43,9 @@ class Post
     protected ?string $sourceUrl = null;
 
     protected ?string $description = null;
+
+    // Links: the address the post points to
+    protected ?string $url = null;
 
     public function getDate() : ?\DateTime
     {
@@ -196,6 +201,26 @@ class Post
         $this->description = $description;
 
         return $this;
+    }
+
+    public function getUrl() : ?string
+    {
+        return $this->url;
+    }
+
+    public function setUrl(?string $url) : self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    // The link's host without a leading www., e.g. example.com, for showing next to its title
+    public function getDomain() : ?string
+    {
+        $host = null === $this->url ? null : parse_url($this->url, PHP_URL_HOST);
+
+        return is_string($host) ? preg_replace('~^www\.~i', '', $host) : null;
     }
 
     public function getFilename() : string

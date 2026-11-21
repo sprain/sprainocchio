@@ -31,6 +31,7 @@ class BuildTest extends TestCase
         $this->writePost('ueber.md', "tags: [Über uns]\ndate: 2019-01-13\nauthor: Claude\n+++\n# Für alle\n\nText.");
 
         $this->writePost('hopper.md', "type: quote\ntags: [Leben]\ndate: 2019-03-01\nsource: Grace Hopper\nsource_url: https://example.com/hopper\n+++\nThe most dangerous phrase.");
+        $this->writePost('link.md', "type: link\ntags: [Internet]\ndate: 2019-04-02\nurl: https://www.example.org/read\ntitle: Worth reading\n+++\nA *short* note.");
 
         mkdir($this->project . '/pages');
         file_put_contents($this->project . '/pages/about.md', "slug: ueber\n+++\n# Über diesen Blog\n\nText.");
@@ -54,6 +55,8 @@ class BuildTest extends TestCase
             'tags/business/index.html',
             '201903/grace-hopper-the-most-dangerous-phrase.html',
             'tags/leben/index.html',
+            '201904/worth-reading.html',
+            'tags/internet/index.html',
             'tags/ueber-uns/index.html',
             'styles/styles.css',
             'media/image.png',
@@ -112,6 +115,32 @@ class BuildTest extends TestCase
         $feed = file_get_contents($this->project . '/public/feed.xml');
         $this->assertStringContainsString('&lt;blockquote&gt;', $feed);
         $this->assertStringContainsString('Grace Hopper', $feed);
+    }
+
+    public function testRendersLinks() : void
+    {
+        [$exitCode, $output] = $this->build();
+        $this->assertSame(0, $exitCode, $output);
+
+        $page = file_get_contents($this->project . '/public/201904/worth-reading.html');
+        $this->assertStringContainsString('<a href="https://www.example.org/read">Worth reading</a>', $page);
+        $this->assertStringContainsString('example.org', $page);
+        $this->assertStringContainsString('A <em>short</em> note.', $page);
+
+        $this->assertStringContainsString('Link: Worth reading', file_get_contents($this->project . '/public/archive/index.html'));
+
+        $feed = file_get_contents($this->project . '/public/feed.xml');
+        $this->assertStringContainsString('&lt;a href="https://www.example.org/read"&gt;Worth reading&lt;/a&gt; (example.org)', $feed);
+    }
+
+    public function testFailsOnLinkWithoutUrl() : void
+    {
+        $this->writePost('nowhere.md', "type: link\ndate: 2019-06-17\ntitle: Nowhere\n+++\nWhere to?");
+
+        [$exitCode, $output] = $this->build();
+
+        $this->assertNotSame(0, $exitCode);
+        $this->assertStringContainsString('needs a "url: https://…"', $output);
     }
 
     public function testFailsOnQuoteWithoutSource() : void
