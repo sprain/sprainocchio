@@ -47,6 +47,9 @@ class Post
     // Links: the address the post points to
     protected ?string $url = null;
 
+    // Generated preview image (share_images in the theme), relative to the public folder
+    protected ?string $shareImage = null;
+
     public function getDate() : ?\DateTime
     {
         return $this->date;
@@ -221,6 +224,18 @@ class Post
         $host = null === $this->url ? null : parse_url($this->url, PHP_URL_HOST);
 
         return is_string($host) ? preg_replace('~^www\.~i', '', $host) : null;
+    }
+
+    public function getShareImage() : ?string
+    {
+        return $this->shareImage;
+    }
+
+    public function setShareImage(?string $shareImage) : self
+    {
+        $this->shareImage = $shareImage;
+
+        return $this;
     }
 
     public function getFilename() : string

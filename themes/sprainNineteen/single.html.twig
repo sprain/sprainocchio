@@ -8,13 +8,14 @@
     <meta name="twitter:card" value="summary">
     <meta name="twitter:title" content="{{ title }}">
     {% if post.summary %}<meta name="twitter:description" content="{{ post.summary }}">{% endif %}
-    {% if post.image %}<meta name="twitter:image" content="{{ post.image }}">{% endif %}
+    {% set share_image = post.image ?: (post.shareImage ? baseUrl ~ post.shareImage : null) %}
+    {% if share_image %}<meta name="twitter:image" content="{{ share_image }}">{% endif %}
 
     <meta property="og:title" content="{{ title }}">
     <meta property="og:type" content="article">
     <meta property="og:url" content="{{ baseUrl }}{{ post.filename }}">
     {% if post.summary %}<meta property="og:description" content="{{ post.summary }}">{% endif %}
-    {% if post.image %}<meta property="og:image" content="{{ post.image }}">{% endif %}
+    {% if share_image %}<meta property="og:image" content="{{ share_image }}">{% endif %}
 {% endblock %}
 
 {% block content %}

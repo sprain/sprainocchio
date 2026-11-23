@@ -4,6 +4,12 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.8.0 – 2026-11-23
+
+### Added
+- A preview image for every post ([#12](https://github.com/sprain/sprainocchio/issues/12)). When the theme's `config.yml` has a `share_images` section, the build draws a 1200 × 630 PNG for each post without its own `image` into `public/share/<Ym>/<slug>.png`: an optional label at the top, the title in large type, a meta line at the bottom. Fonts (`.ttf`/`.otf`), colours, a background colour or image and the three texts (Twig templates with `post` and the theme's globals) come from the theme, so the engine stays design-neutral. Long titles get smaller and are cut off with … only when they still don't fit. Templates get the path as `post.shareImage`. Needs PHP's GD extension with FreeType; without `share_images` nothing changes.
+- sprainNineteen uses `post.shareImage` for `og:image` and `twitter:image` when a post has no `image`.
+
 ## 0.7.0 – 2026-11-21
 
 ### Added

@@ -17,6 +17,7 @@ use Sprainocchio\Blog\BlogBuilder;
 use Sprainocchio\Feed\FeedSaver;
 use Sprainocchio\Page\PageBuilder;
 use Sprainocchio\Redirect\RedirectSaver;
+use Sprainocchio\ShareImage\ShareImageRenderer;
 use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostSaver;
@@ -153,6 +154,20 @@ $container['feedSaver'] = function($c) {
     );
 };
 
+// Only when the theme configures share_images
+$container['shareImageRenderer'] = function($c) {
+    if (!isset($c['themeConfig']['share_images'])) {
+        return null;
+    }
+
+    return new ShareImageRenderer(
+        $c['twig'],
+        $c['blogConfig']['themePath'],
+        $c['blogConfig']['publicPath'],
+        $c['themeConfig']['share_images']
+    );
+};
+
 $container['blogBuilder'] = function($c) {
     return new BlogBuilder(
         $c['postFinder'],
@@ -162,6 +177,7 @@ $container['blogBuilder'] = function($c) {
         $c['mainArchive'],
         $c['tagsArchive'],
         $c['startpage'],
-        $c['feedSaver']
+        $c['feedSaver'],
+        $c['shareImageRenderer']
     );
 };
