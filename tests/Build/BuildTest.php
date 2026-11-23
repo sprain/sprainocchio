@@ -182,6 +182,28 @@ class BuildTest extends TestCase
         $this->assertStringContainsString('cannot be saved as index.html', $output);
     }
 
+    #[\PHPUnit\Framework\Attributes\RequiresFunction('imagettftext')]
+    public function testGeneratesShareImages() : void
+    {
+        $theme = $this->project . '/themes/sprainNineteen';
+        copy(dirname(__DIR__) . '/ShareImage/fixtures/inter.ttf', $theme . '/inter.ttf');
+        file_put_contents($theme . '/config.yml', "\nshare_images:\n  font: inter.ttf\n  label: '{{ post.author }}'\n", FILE_APPEND);
+        $this->writePost('bild.md', "date: 2019-05-01\nimage: https://example.com/own.jpg\n+++\n# Mit Bild\n\nText.");
+
+        [$exitCode, $output] = $this->build();
+        $this->assertSame(0, $exitCode, $output);
+
+        $this->assertSame([1200, 630], array_slice(getimagesize($this->project . '/public/share/201906/faire-preise.png'), 0, 2));
+        $this->assertStringContainsString(
+            '<meta property="og:image" content="https://example.com/blog/share/201906/faire-preise.png">',
+            file_get_contents($this->project . '/public/201906/faire-preise.html')
+        );
+
+        // A post with its own image keeps it
+        $this->assertFileDoesNotExist($this->project . '/public/share/201905/mit-bild.png');
+        $this->assertStringContainsString('content="https://example.com/own.jpg"', file_get_contents($this->project . '/public/201905/mit-bild.html'));
+    }
+
     protected function build() : array
     {
         $command = escapeshellarg(PHP_BINARY) . ' ' . escapeshellarg(dirname(__DIR__, 2) . '/bin/sprainocchio') . ' 2>&1';

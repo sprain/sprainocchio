@@ -72,6 +72,32 @@ Load stylesheets and other files from your theme with `asset()`, so browsers fet
 
 The version is a hash of the file's content and changes only when the file does. The path is relative to `public/`, so it works for the theme's `public_dirs` and for `static/`. The build fails if the file doesn't exist.
 
+## Preview images
+
+Link previews on LinkedIn, Mastodon, messengers and the like show a post's `image`. For posts without one, sprainocchio can draw a 1200 × 630 PNG with the title. Configure it in your theme's `config.yml` (paths are relative to the theme; keep the fonts outside `public_dirs`):
+
+```yaml
+share_images:
+  font: share/title.ttf                 # required, .ttf or .otf
+  meta_font: share/text.ttf             # optional, for meta line and label
+  background: '#f6f5f1'                 # a colour or an image (scaled to cover)
+  color: '#15171c'
+  meta_color: '#555a66'
+  label_color: '#4a2fd6'
+  title: '{{ post.title }}'             # Twig, with post and the theme's globals
+  meta: "{{ post.date|date('j F Y') }}"
+  label: '{% if post.author %}By {{ post.author }}{% endif %}'
+```
+
+The images land in `public/share/` and templates get their path as `post.shareImage`:
+
+```twig
+{% set image = post.image ?: (post.shareImage ? baseUrl ~ post.shareImage : null) %}
+{% if image %}<meta property="og:image" content="{{ image }}">{% endif %}
+```
+
+This needs PHP's GD extension with FreeType.
+
 ## Feed
 
 Every build writes an Atom feed of the 20 newest posts to `public/feed.xml`. Set its title and the default author in `config.yml`:

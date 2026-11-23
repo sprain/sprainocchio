@@ -9,6 +9,7 @@ use Sprainocchio\Post\Post;
 use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostFinder;
 use Sprainocchio\Post\PostSaver;
+use Sprainocchio\ShareImage\ShareImageRenderer;
 
 class BlogBuilder
 {
@@ -20,7 +21,8 @@ class BlogBuilder
         protected Archive $mainArchive,
         protected Archive $tagArchive,
         protected Archive $startpage,
-        protected ?FeedSaver $feedSaver = null
+        protected ?FeedSaver $feedSaver = null,
+        protected ?ShareImageRenderer $shareImageRenderer = null
     ) {
     }
 
@@ -38,6 +40,10 @@ class BlogBuilder
     protected function buildPosts(array $posts) : void
     {
         foreach ($posts as $post) {
+            // Posts with their own image keep it as preview
+            if (null !== $this->shareImageRenderer && null === $post->getImage()) {
+                $post->setShareImage($this->shareImageRenderer->render($post));
+            }
             $this->postSaver->setPost($post)->save();
         }
     }
