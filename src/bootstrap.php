@@ -23,10 +23,12 @@ use Sprainocchio\Post\PostCreator;
 use Sprainocchio\Post\PostSaver;
 use Sprainocchio\Theme\DataCopier;
 use Sprainocchio\Twig\AssetExtension;
+use Sprainocchio\Twig\HtmlEscaper;
 use Sprainocchio\Twig\UrlizerExtension;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
+use Twig\Runtime\EscaperRuntime;
 use Twig\Loader\FilesystemLoader;
 
 $container = new Container();
@@ -63,7 +65,9 @@ $container['themeConfig'] = function($c) {
 
 $container['twig'] = function($c) {
     $loader = new FilesystemLoader($c['blogConfig']['themePath']);
-    $twig = new Environment($loader);
+    // Templates escape with HtmlEscaper instead of Twig's htmlspecialchars, which also turns ' and > into entities
+    $twig = new Environment($loader, ['autoescape' => HtmlEscaper::STRATEGY]);
+    $twig->getRuntime(EscaperRuntime::class)->setEscaper(HtmlEscaper::STRATEGY, HtmlEscaper::escape(...));
     $twig->addExtension(new UrlizerExtension());
     $twig->addExtension(new AssetExtension($c['blogConfig']['publicPath'], $c['blogConfig']['baseUrl']));
     $twig->addGlobal('baseUrl', $c['blogConfig']['baseUrl']);

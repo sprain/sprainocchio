@@ -4,6 +4,12 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.9.0 – 2026-11-26
+
+### Changed
+- Templates escape only what HTML needs ([#20](https://github.com/sprain/sprainocchio/issues/20)). Twig's default escaper also turns `'` into `&#039;` and `>` into `&gt;`, and some link-preview services show those entities as they are (`It&#039;s`, `Love &gt; Money`). The new default autoescape strategy `html_minimal` (`Sprainocchio\Twig\HtmlEscaper`) escapes `<`, `"` and an `&` that could start a character reference, and leaves every other character as written. Existing themes need no change.
+- Breaking for themes that put variables into single-quoted attributes (`title='{{ x }}'`): use double quotes. `{{ x|e }}` or `{{ x|e('html') }}` is now escaped twice; drop the filter, autoescaping covers it.
+
 ## 0.8.0 – 2026-11-23
 
 ### Added

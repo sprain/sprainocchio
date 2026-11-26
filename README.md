@@ -61,6 +61,10 @@ Put an italic line right below an image, and it becomes the image's caption (`<f
 *Ronda*
 ```
 
+## Escaping
+
+Templates are autoescaped, but only where HTML needs it: `<`, `"` and an `&` that could start a character reference become entities, everything else (`'`, `>`, `«»`, umlauts) stays as written. Link previews then show `It's Love > Money` instead of `It&#039;s Love &gt; Money`. Quote attributes with double quotes (`content="{{ post.title }}"`), and don't add `|e`: autoescaping already covers it.
+
 ## Theme assets
 
 Load stylesheets and other files from your theme with `asset()`, so browsers fetch them again after every change instead of showing a cached old version:

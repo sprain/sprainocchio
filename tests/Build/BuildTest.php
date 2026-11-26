@@ -102,6 +102,19 @@ class BuildTest extends TestCase
         );
     }
 
+    public function testLeavesApostrophesAndGreaterThanInHeadTags() : void
+    {
+        $this->writePost('love.md', "date: 2019-05-01\nslug: love\n+++\n# It's Love > Money\n\nDon't \"quote\" 1 &lt; 2.");
+
+        [$exitCode, $output] = $this->build();
+        $this->assertSame(0, $exitCode, $output);
+
+        $page = file_get_contents($this->project . '/public/201905/love.html');
+        $this->assertStringContainsString("<title>It's Love > Money</title>", $page);
+        $this->assertStringContainsString("<meta property=\"og:title\" content=\"It's Love > Money\">", $page);
+        $this->assertStringContainsString("content=\"Don't &quot;quote&quot; 1 &lt; 2.\"", $page);
+    }
+
     public function testRendersQuotes() : void
     {
         [$exitCode, $output] = $this->build();
