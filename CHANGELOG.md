@@ -4,6 +4,15 @@ All notable changes to sprainocchio. Versions follow [semantic versioning](https
 
 Every pull request that changes the engine (`src/`, `bin/`, `themes/`, `builder.php`, `composer.json`) adds a new version at the top of this file. When it is merged, GitHub Actions tags it and publishes a release with these notes.
 
+## 0.10.0 – 2026-11-28
+
+### Added
+- Width and height for local images ([#18](https://github.com/sprain/sprainocchio/issues/18)). Images in posts and pages that lie in `static/` (absolute URLs below `baseUrl`, paths below its path, relative paths) get `width` and `height` from the file via `getimagesize()`, so browsers reserve their space and the text no longer jumps while they load. External images, images that already have a size and files PHP can't measure are left as written. `PostCreator` takes the static path and `baseUrl` as optional constructor arguments.
+- sprainNineteen scales images with `height: auto`.
+
+### Changed
+- Breaking for themes that set an image's `width` in CSS without `height: auto`: the new `height` attribute then stretches the image. Add `height: auto`.
+
 ## 0.9.1 – 2026-11-27
 
 ### Security

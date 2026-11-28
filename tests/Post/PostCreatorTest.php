@@ -269,6 +269,57 @@ class PostCreatorTest extends TestCase
         $this->assertStringContainsString('<p><img src="a.jpg" alt="Alone" /></p>', $post->getContent());
     }
 
+    public function testAddsSizesToLocalImages() : void
+    {
+        $static = $this->dir . '-static';
+        mkdir($static . '/media', 0777, true);
+        // A GIF header is enough for getimagesize(), no GD needed
+        file_put_contents($static . '/media/photo.png', 'GIF89a' . pack('vv', 30, 20) . "\x00\x00\x00;");
+        file_put_contents($this->dir . '/post.md', <<<MD
+            date: 2026-11-28
+            +++
+            ![Absolute](https://example.com/blog/media/photo.png)
+
+            ![Root](/blog/media/photo.png?v=1)
+
+            ![Relative](media/photo.png)
+            *Caption*
+
+            ![External](https://elsewhere.com/media/photo.png)
+
+            ![Missing](https://example.com/blog/media/missing.png)
+
+            ![Outside](https://example.com/blog/../post.md)
+
+            <img src="https://example.com/blog/media/photo.png" alt="Sized" width="15" height="10">
+            MD);
+
+        try {
+            $html = (new PostCreator(new \Parsedown(), $static, 'https://example.com/blog/'))->fromFile(
+                new SplFileInfo($this->dir . '/post.md', '', 'post.md')
+            )->getContent();
+        } finally {
+            unlink($static . '/media/photo.png');
+            rmdir($static . '/media');
+            rmdir($static);
+        }
+
+        $this->assertStringContainsString('<img src="https://example.com/blog/media/photo.png" alt="Absolute" width="30" height="20" />', $html);
+        $this->assertStringContainsString('alt="Root" width="30" height="20"', $html);
+        $this->assertStringContainsString('<figure><img src="media/photo.png" alt="Relative" width="30" height="20" /><figcaption>Caption</figcaption></figure>', $html);
+        $this->assertStringContainsString('<img src="https://elsewhere.com/media/photo.png" alt="External" />', $html);
+        $this->assertStringContainsString('alt="Missing" />', $html);
+        $this->assertStringContainsString('alt="Outside" />', $html);
+        $this->assertStringContainsString('alt="Sized" width="15" height="10">', $html);
+    }
+
+    public function testLeavesImagesAloneWithoutStaticPath() : void
+    {
+        $post = $this->createPost("date: 2026-11-28\n+++\n![Photo](media/photo.png)");
+
+        $this->assertStringContainsString('<img src="media/photo.png" alt="Photo" />', $post->getContent());
+    }
+
     protected function createPost(string $content) : \Sprainocchio\Post\Post
     {
         file_put_contents($this->dir . '/post.md', $content);

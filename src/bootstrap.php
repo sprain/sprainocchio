@@ -91,7 +91,9 @@ $container['postFinder'] = function($c) use ($projectRoot) {
 
 $container['postCreator'] = function($c) {
     return new PostCreator(
-        new Parsedown()
+        new Parsedown(),
+        $c['blogConfig']['staticPath'],
+        $c['blogConfig']['baseUrl']
     );
 };
 
