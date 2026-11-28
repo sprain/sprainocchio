@@ -15,8 +15,11 @@ class PostCreator
 
     protected SplFileInfo $file;
 
+    // With $staticPath, local images get their width and height (see addImageSizes); $baseUrl maps absolute URLs to it
     public function __construct(
-        protected \Parsedown $mdParser
+        protected \Parsedown $mdParser,
+        protected ?string $staticPath = null,
+        protected ?string $baseUrl = null
     ) {
     }
 
@@ -212,7 +215,59 @@ class PostCreator
     {
         $contentParts = $this->splitContent();
 
-        return $this->addFigures($this->mdParser->text(end($contentParts)));
+        return $this->addImageSizes($this->addFigures($this->mdParser->text(end($contentParts))));
+    }
+
+    // Images from the static folder get width and height, so browsers reserve their space and the text doesn't jump
+    // while they load. External images, images that already have a size and files PHP can't measure stay as written
+    protected function addImageSizes(string $html) : string
+    {
+        if (null === $this->staticPath) {
+            return $html;
+        }
+
+        return preg_replace_callback(
+            '~<img\b[^>]*>~i',
+            function (array $match) : string {
+                $tag = $match[0];
+                if (preg_match('~\s(?:width|height)\s*=~i', $tag) || !preg_match('~\ssrc\s*=\s*"([^"]*)"~i', $tag, $src)) {
+                    return $tag;
+                }
+
+                $file = $this->findStaticFile(html_entity_decode($src[1], ENT_QUOTES | ENT_HTML5));
+                $size = null === $file ? false : @getimagesize($file);
+                if (false === $size || $size[0] < 1 || $size[1] < 1) {
+                    return $tag;
+                }
+
+                return preg_replace('~\s*/?>$~', sprintf(' width="%d" height="%d"$0', $size[0], $size[1]), $tag, 1);
+            },
+            $html
+        );
+    }
+
+    // Accepts URLs below baseUrl, paths below its path (/blog/media/x.jpg) and relative paths (media/x.jpg)
+    protected function findStaticFile(string $src) : ?string
+    {
+        $path = preg_replace('~[?#].*$~s', '', $src);
+        $baseUrl = rtrim((string) $this->baseUrl, '/') . '/';
+        $basePath = rtrim((string) parse_url($baseUrl, PHP_URL_PATH), '/') . '/';
+
+        if (preg_match('~^https?://~i', $baseUrl) && 0 === stripos($path, $baseUrl)) {
+            $path = substr($path, strlen($baseUrl));
+        } elseif (str_starts_with($path, '/') && !str_starts_with($path, '//') && str_starts_with($path, $basePath)) {
+            $path = substr($path, strlen($basePath));
+        } elseif (preg_match('~^(?:[a-z][a-z0-9+.-]*:|/)~i', $path)) {
+            return null;
+        }
+
+        $static = realpath($this->staticPath);
+        $file = realpath($static . '/' . rawurldecode($path));
+        if (false === $static || false === $file || !is_file($file) || !str_starts_with($file, $static . DIRECTORY_SEPARATOR)) {
+            return null;
+        }
+
+        return $file;
     }
 
     // An image alone in its paragraph with an italic line right below it becomes a figure with a caption:

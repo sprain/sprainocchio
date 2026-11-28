@@ -61,6 +61,10 @@ Put an italic line right below an image, and it becomes the image's caption (`<f
 *Ronda*
 ```
 
+## Image sizes
+
+Images from `static/` get `width` and `height` from the file, so browsers reserve their space and the text doesn't jump while they load. This works for absolute URLs below `baseUrl` (`https://example.com/blog/media/ronda.jpg`), paths below its path (`/blog/media/ronda.jpg`) and relative paths (`media/ronda.jpg`). External images and images that already have a size stay as written. Themes that scale images need `height: auto` next to `width` or `max-width`, otherwise the images are stretched.
+
 ## Escaping
 
 Templates are autoescaped, but only where HTML needs it: `<`, `"` and an `&` that could start a character reference become entities, everything else (`'`, `>`, `«»`, umlauts) stays as written. Link previews then show `It's Love > Money` instead of `It&#039;s Love &gt; Money`. Quote attributes with double quotes (`content="{{ post.title }}"`), and don't add `|e`: autoescaping already covers it.

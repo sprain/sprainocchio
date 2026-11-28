@@ -121,6 +121,7 @@ article {
 }
 #content img {
 	width: 100%;
+	height: auto;
 }
 /* An image with an italic line right below it becomes a figure with a caption; same width as an image in its own paragraph */
 #content figure {
